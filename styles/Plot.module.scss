@@ -1,0 +1,106 @@
+.context {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    
+    :global {
+    
+    }
+}
+
+.domainColoringWrapper {
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+}
+
+.editorDrawer {
+    :global {
+        .ant-drawer-body {
+            padding: 0;
+        }
+        .ant-drawer-header {
+            background: #2a2a2d;
+            border-bottom: 1px solid #3b3b3b;
+        }
+        .ant-drawer-title {
+            color: white;
+            font-family: "Montserrat Alternates", serif;
+        }
+        .ant-drawer-close {
+            display: none;
+        }
+    }
+}
+
+.editorDrawerContent {
+    width: 600px;
+    height: 100%;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.closeEditorButton {
+    width: 80px;
+    height: 30px;
+    border: none;
+    border-radius: 5px;
+    background: red;
+    color: white;
+    cursor: pointer;
+    font-family: "Montserrat Alternates", serif;
+    font-size: large;
+    transition: 0.3s;
+    &:hover {
+        background: #da2323;
+        transition: 0.3s;
+    }
+}
+
+.editorButtonsNav {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: 20px;
+    padding: 50px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    button {
+        width: 80px;
+        height: 50px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        text-transform: uppercase;
+        font-family: 'Montserrat Alternates', serif;
+        font-size: large;
+        transition: 0.3s;
+        &:hover {
+            transform: translateY(-5px);
+            transition: 0.3s;
+        }
+    }
+}
+
+.plotButton {
+    background: #6abaff;
+    color: white;
+    &:hover {
+        background: #319cf8;
+        transition: 0.3s;
+    }
+}
+
+.openEditorButton {
+    background: #ffeb61;
+    color: white;
+    &:hover {
+        background: #efd52b;
+        transition: 0.3s;
+    }
+}

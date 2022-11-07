@@ -1,0 +1,25 @@
+@precedence { expr @left }
+
+@top Program { expression* }
+
+expression {
+    Number |
+    Identifier |
+    Annotation |
+    Comment |
+    Flag
+}
+
+@skip { Space | Operator | Sign }
+
+@tokens {
+    Identifier { @asciiLetter (@asciiLetter | @digit | '_')* }
+    Number { @digit+ (Dot @digit+)? ('i')? }
+    Annotation { '@' Identifier }
+    Flag { '$' Identifier }
+    Operator { ('+'|'-'|'*'|'/'|'^') }
+    Dot { '.' }
+    Space { @whitespace+ }
+    Sign { (',' | ';') }
+    Comment { "#" ![#]* "#" }
+}
