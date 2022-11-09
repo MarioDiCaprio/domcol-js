@@ -17,7 +17,7 @@ const MathJax: React.FC<MathJaxProps> = ({ math, raw, display = false }) => {
     useEffect(() => {
         const {MathComponent} = require('mathjax-react');
         setResult(<MathComponent tex={tex} display={display} />)
-    }, []);
+    }, [math, raw, display]);
 
     return result;
 }
