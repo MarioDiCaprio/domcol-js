@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useGesture } from '@use-gesture/react';
-import { useDomainColoringImports } from '../../data/shaders';
+import { loadDomainColoringImports } from '../../data/shaders';
 import MathGLSL from '../../data/parser/mathGLSL';
 import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
@@ -66,7 +66,7 @@ const DomcolGL: React.FC<DomColGLProps> = ({
                                            }) => {
 
     // imports to prepend to the fragment shader
-    const domcolImports = useDomainColoringImports();
+    const domcolImports = loadDomainColoringImports();
     // reference to the shader material
     const shaderRef = useRef<JSX.IntrinsicElements['shaderMaterial']>();
 
@@ -138,8 +138,10 @@ const DomcolGL: React.FC<DomColGLProps> = ({
         }
         `;
 
-    const fragmentShader = domcolImports +
+    const fragmentShader =
         `
+        ${domcolImports}
+        
         uniform float screenWidth;
         uniform float screenHeight;
         uniform vec2 domainX, domainY;

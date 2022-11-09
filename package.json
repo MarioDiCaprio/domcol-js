@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "lezer": "lezer-generator data/parser/codemirror/Complex.grammar -o data/parser/codemirror/lang.ts"
+    "lezer": "lezer-generator data/parser/codemirror/Complex.grammar -o data/parser/codemirror/lang.ts",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",
@@ -25,10 +27,12 @@
     "antlr4": "^4.11.0",
     "bootstrap": "^5.2.2",
     "codemirror": "^5.65.2",
+    "glslify-loader": "^2.0.0",
     "jquery": "^3.6.1",
     "lethargy": "^1.0.9",
     "mathjax-react": "^2.0.1",
     "next": "13.0.0",
+    "raw-loader": "^4.0.2",
     "react": "18.2.0",
     "react-bootstrap": "^2.6.0",
     "react-codemirror": "^1.0.0",
@@ -39,6 +43,16 @@
     "three": "^0.146.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.20.2",
+    "@storybook/addon-actions": "^6.5.13",
+    "@storybook/addon-essentials": "^6.5.13",
+    "@storybook/addon-interactions": "^6.5.13",
+    "@storybook/addon-links": "^6.5.13",
+    "@storybook/builder-webpack5": "^6.5.13",
+    "@storybook/manager-webpack5": "^6.5.13",
+    "@storybook/preset-scss": "^1.0.3",
+    "@storybook/react": "^6.5.13",
+    "@storybook/testing-library": "^0.0.13",
     "@types/antlr4": "^4.7.3",
     "@types/jquery": "^3.5.14",
     "@types/node": "18.11.8",
@@ -46,8 +60,14 @@
     "@types/react-codemirror": "^1.0.7",
     "@types/react-dom": "18.0.8",
     "@types/three": "^0.144.0",
+    "babel-loader": "^8.3.0",
+    "css-loader": "^6.7.1",
     "eslint": "8.26.0",
     "eslint-config-next": "13.0.0",
+    "sass": "^1.56.1",
+    "sass-loader": "^13.1.0",
+    "storybook-addon-next-router": "^4.0.1",
+    "style-loader": "^3.3.1",
     "typescript": "4.8.4"
   }
 }
