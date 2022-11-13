@@ -32,7 +32,7 @@ const Editor: React.FC<EditorProps> = props => {
     }, []);
 
     return (
-        <div ref={ref} className={styles.context}>
+        <div ref={ref} className={styles.context} data-test="editor">
             <CodeMirror
                 value={props.value}
                 theme={githubDark}

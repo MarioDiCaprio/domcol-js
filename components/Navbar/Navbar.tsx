@@ -13,21 +13,23 @@ const Navbar: React.FC = () => {
 
     const NavLink: React.FC<{ url: string, title: string }> = ({ url, title }) => (
         <Link href={url} className={getNavLinkClass(url)}>
-            { title }
+            <span data-test={title}>
+                { title }
+            </span>
         </Link>
     );
 
     return (
         <div className={styles.context}>
 
-            <div className={styles.title}>
+            <div className={styles.title} data-test="title">
                 <img src="/img/logo-full.png" alt="" />
             </div>
 
-            <div className={styles.links}>
-                <NavLink url="/" title="Home" />
-                <NavLink url="/plot" title="Plot" />
-                <NavLink url="/learn" title="Learn" />
+            <div className={styles.links} data-test="links">
+                <NavLink url="/" title="Home"/>
+                <NavLink url="/plot" title="Plot"/>
+                <NavLink url="/learn" title="Learn"/>
             </div>
 
             <div className={styles.account}>

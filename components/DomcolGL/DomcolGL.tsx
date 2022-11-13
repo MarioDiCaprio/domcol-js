@@ -160,30 +160,32 @@ const DomcolGL: React.FC<DomColGLProps> = ({
     ;
 
     return (
-        <Canvas style={{ width: '100%', height: '100%' }}>
-            {/* @ts-ignore */}
-            <mesh
-                position={[0, 0, 0]}
-                rotation={[0, 0, 0]} scale={[1, 1, 1]}
-                {...bind()}
-            >
-                <planeBufferGeometry attach="geometry" args={[100, 100]} />
-                <shaderMaterial
-                    ref={shaderRef as any}
-                    attach="material"
-                    needsUpdate={true}
-                    uniforms={{
-                        screenWidth:  { value: width  },
-                        screenHeight: { value: height },
-                        domainX: { value: new THREE.Vector2(domain.x.min, domain.x.max) },
-                        domainY: { value: new THREE.Vector2(domain.y.min, domain.y.max) }
-                    }}
-                    vertexShader={ vertexShader }
-                    fragmentShader={ fragmentShader }
-                    side={THREE.DoubleSide}
-                />
-            </mesh>
-        </Canvas>
+        <div style={{ width: '100%', height: '100%' }} data-test="canvas">
+            <Canvas style={{ width: '100%', height: '100%' }}>
+                {/* @ts-ignore */}
+                <mesh
+                    position={[0, 0, 0]}
+                    rotation={[0, 0, 0]} scale={[1, 1, 1]}
+                    {...bind()}
+                >
+                    <planeBufferGeometry attach="geometry" args={[100, 100]} />
+                    <shaderMaterial
+                        ref={shaderRef as any}
+                        attach="material"
+                        needsUpdate={true}
+                        uniforms={{
+                            screenWidth:  { value: width  },
+                            screenHeight: { value: height },
+                            domainX: { value: new THREE.Vector2(domain.x.min, domain.x.max) },
+                            domainY: { value: new THREE.Vector2(domain.y.min, domain.y.max) }
+                        }}
+                        vertexShader={ vertexShader }
+                        fragmentShader={ fragmentShader }
+                        side={THREE.DoubleSide}
+                    />
+                </mesh>
+            </Canvas>
+        </div>
     );
 }
 
