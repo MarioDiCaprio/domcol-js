@@ -12,8 +12,8 @@ const Navbar: React.FC = () => {
     }
 
     const NavLink: React.FC<{ url: string, title: string }> = ({ url, title }) => (
-        <Link href={url} className={getNavLinkClass(url)}>
-            <span data-test={title}>
+        <Link href={url}>
+            <span data-test={title} className={getNavLinkClass(url)}>
                 { title }
             </span>
         </Link>
