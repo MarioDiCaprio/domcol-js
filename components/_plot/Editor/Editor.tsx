@@ -49,7 +49,8 @@ const Equation: React.FC<EquationProps> = ({ index, initial = "", onChange }) =>
                 style={{ width: '100%', border: 'none', paddingLeft: '10px' }}
                 latex={initial}
                 config={{
-                    autoCommands: 'pi sqrt'
+                    autoCommands: 'pi sqrt Re Im Mandelbrot',
+                    autoOperatorNames: 'sin cos tan log ln Mandelbrot'
                 }}
                 onChange={(mathField) => {
                     console.log(mathField.latex());

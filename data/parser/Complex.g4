@@ -32,7 +32,7 @@ function group(start, delimiter, end, args) {
 this.group = group;
 
 // The parsed lines to prepend to the start of the document
-this.tmpStart = ['vec2 colormode = vec2(0, 0);'];
+this.tmpStart = [];
 
 // The lines of the parsed code in GLSL. They are merged later.
 this.tmp = [];
@@ -48,7 +48,7 @@ this.result = '';
 
 
 parse:
-    assignment
+    (assignment | fractal)
     {
         for (let key in this.variables) {
             this.tmpStart.push(`vec2 ${key} = ${this.variables[key]};`);
@@ -85,7 +85,8 @@ assignment:
     {
         let value = $a.value;
         if ($isPlot) {
-            this.tmp.push(`
+            this.tmpStart.push('vec2 colormode = vec2(0, 0);');
+            this.tmpEnd.push(`
                 vec2 plottedFunction(vec2 ${argument}_VAR) {
                     return ${value};
                 }
@@ -99,6 +100,19 @@ assignment:
         } else {
             this.tmp.push(`vec2 ${name}_VAR = ${value};`);
         }
+    }
+;
+
+
+fractal:
+    '\\operatorname{Mandelbrot}'
+    {
+        this.tmpStart.push('vec2 colormode = vec2(1, 0);');
+        this.tmpEnd.push(`
+            vec2 plottedFunction(vec2 z) {
+                return Mandelbrot(z);
+            }
+        `);
     }
 ;
 
@@ -126,22 +140,26 @@ addition returns [value]:
 
 multiplication returns [value]:
     // multiplication
-    p1 = power
+    p1 = fractionOrPower
     { let powers = [$p1.value]; }
     (
         TIMES?
-        p2 = power
+        p2 = fractionOrPower
         { powers.push($p2.value); }
     )*
     { $value = this.group('multiplyC(', ', ', ')', powers); }
+;
+
+fractionOrPower returns [value]:
+    p=power
+    { $value = $p.value; }
     |
-    // division
     DIVIDE
-    LEFT_BRACE p1=power RIGHT_BRACE
-    LEFT_BRACE p2=power RIGHT_BRACE
+    LEFT_BRACE a1=addition RIGHT_BRACE
+    LEFT_BRACE a2=addition RIGHT_BRACE
     {
-        let d1 = $p1.value;
-        let d2 = $p2.value;
+        let d1 = $a1.value;
+        let d2 = $a2.value;
         $value = `divideC(${d1}, ${d2})`;
     }
 ;
@@ -170,6 +188,7 @@ power returns [value]:
     { $value = `sqrtC(${$a.value})` }
 ;
 
+
 // a function, variable, number or nested expression
 atom returns [value]:
     // predefined constants (without backslash)
@@ -182,7 +201,7 @@ atom returns [value]:
     |
     // predefined functions
     '\\'
-    f=('sin' | 'cos' | 'tan' | 'log' | 'ln')
+    f=('sin' | 'cos' | 'tan' | 'log' | 'ln' | 'Re' | 'Im')
     LEFT a=addition RIGHT
     {
         let funcName = $f.text;
