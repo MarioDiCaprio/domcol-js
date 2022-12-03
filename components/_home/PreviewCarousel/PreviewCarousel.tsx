@@ -6,7 +6,7 @@ import Carousel from "react-bootstrap/Carousel";
 const PreviewCarousel: React.FC = () => {
     return (
         <div className={styles.wrapper}>
-            <Carousel>
+            <Carousel fade>
 
                 {/* Slide 1 */}
                 <Carousel.Item>
