@@ -3,14 +3,14 @@ import dynamic from "next/dynamic";
 import {useState} from "react";
 import {NextPage} from "next";
 import Base from "../components/Base/Base";
-import DomcolGL from "../components/DomcolGL/DomcolGL";
+import DomcolGL from "../components/_plot/DomcolGL/DomcolGL";
 import {Drawer, Space} from "antd";
 import MathGLSL from "../data/parser/mathGLSL";
 import {useSelector} from "react-redux";
 import {RootState} from "../redux/store";
 
 // avoid server-side rendering on Editor to prevent "window is not defined"
-const Editor = dynamic(() => import("../components/Editor/Editor"), { ssr: false });
+const Editor = dynamic(() => import("../components/_plot/Editor/Editor"), { ssr: false });
 
 
 const Plot: NextPage = () => {

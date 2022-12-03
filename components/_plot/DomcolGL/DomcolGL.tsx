@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useGesture } from '@use-gesture/react';
-import { loadDomainColoringImports } from '../../data/shaders';
+import { loadDomainColoringImports } from '../../../data/shaders';
 import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
 

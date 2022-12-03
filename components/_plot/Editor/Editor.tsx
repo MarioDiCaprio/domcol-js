@@ -2,8 +2,8 @@ import styles from './Editor.module.scss';
 import React, {useEffect, useState} from 'react';
 import { EditableMathField, addStyles } from 'react-mathquill';
 import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../../redux/store";
-import {setEquations} from "../../redux/slices/equationsSlice";
+import {RootState} from "../../../redux/store";
+import {setEquations} from "../../../redux/slices/equationsSlice";
 
 
 // add styles for Mathquill

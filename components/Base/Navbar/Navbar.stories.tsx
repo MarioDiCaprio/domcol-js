@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 
 
 export default {
-    title: 'components/Navbar',
+    title: 'components/Base/Navbar',
     component: Navbar
 } as ComponentMeta<typeof Navbar>;
 

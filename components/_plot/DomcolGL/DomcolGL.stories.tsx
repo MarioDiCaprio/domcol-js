@@ -12,7 +12,7 @@ vec2 plottedFunction(vec2 z) {
 
 
 export default {
-    title: 'components/DomcolGL',
+    title: 'components/_plot/DomcolGL',
     component: DomcolGL,
     args: {
         code: INITIAL_CODE,
