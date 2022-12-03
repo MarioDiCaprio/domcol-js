@@ -1,47 +1,66 @@
 import styles from './Editor.module.scss';
-import React, {useCallback, useRef} from 'react';
-import CodeMirror, {ReactCodeMirrorProps} from '@uiw/react-codemirror';
-import { githubDark } from "@uiw/codemirror-theme-github";
-import {complex} from "../../data/parser/codemirror/complexMathCodemirrorSupport";
+import React, {useEffect, useState} from 'react';
+import { EditableMathField, addStyles } from 'react-mathquill';
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "../../redux/store";
+import {setEquations} from "../../redux/slices/equationsSlice";
 
 
-/**
- * Props for the editor. There is an event that is triggered each
- * time the code is changed, as well as the current value in the editor.
- */
-interface EditorProps {
-    /** Triggered each time the code is changed. Takes the new code as argument. */
-    onCodeChanged?: (code: string) => void;
-    /** The current value of the editor. */
-    value?: string;
+// add styles for Mathquill
+addStyles();
+
+
+interface EquationProps {
+    index: number;
+    initial?: string;
+    onChange?: (latex: string) => void;
 }
 
-/**
- * This component is a code editor. This editor parses complex math.
- * Please refer to `EditorProps` for more information.
- * @param props The editor props
- * @returns The code editor
- */
-const Editor: React.FC<EditorProps> = props => {
-    const ref = useRef<HTMLDivElement>(null);
-
-    // @ts-ignore
-    const onChange = useCallback<ReactCodeMirrorProps['onChange']>((value, _viewUpdate) => {
-        if (props.onCodeChanged)
-            props.onCodeChanged(value);
-    }, []);
-
+const Equation: React.FC<EquationProps> = ({ index, initial = '', onChange }) => {
     return (
-        <div ref={ref} className={styles.context} data-test="editor">
-            <CodeMirror
-                value={props.value}
-                theme={githubDark}
-                onChange={onChange}
-                extensions={[complex()]}
-                height="100vh"
+        <div id={'equation-' + index} key={'equation-' + index} className={styles.equation}>
+            <div className={styles.equationIndex}>
+                <span>{ index + 1 }</span>
+            </div>
+            <EditableMathField
+                style={{ width: '100%', border: 'none', paddingLeft: '10px' }}
+                latex={initial}
+                config={{
+                    autoCommands: 'pi sqrt'
+                }}
+                onChange={(mathField) => {
+                    console.log(mathField.latex());
+                    if (onChange) onChange(mathField.latex());
+                }}
             />
         </div>
     );
 }
+
+
+const Editor: React.FC = () => {
+    const [equationComponents, setEquationComponents] = useState<JSX.Element[]>([]);
+
+    const equations = useSelector((state: RootState) => state.equations);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        setEquationComponents(equations.map((eq, index) => (
+            <Equation index={index} initial={eq} onChange={latex => handleChange(latex, index)} />
+        )))
+    }, []);
+
+    function handleChange(latex: string, index: number) {
+        let tmp = equations.map((eq, i) => i === index? latex : equations[i]);
+        dispatch(setEquations(tmp));
+    }
+
+    return (
+        <div className={styles.context}>
+            { equationComponents }
+        </div>
+    );
+}
+
 
 export default Editor;

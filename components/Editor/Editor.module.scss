@@ -1,11 +1,27 @@
 .context {
+    width: 100%;
     height: 100%;
-    * {
-        font-family: 'Source Code Pro', monospace;
-        font-size: 16px;
-        line-height: 30px;
-    }
-    &:first-child {
-        height: 100%;
-    }
+}
+
+.equation {
+    width: 100%;
+    min-height: 55px;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+}
+
+.equationIndex {
+    width: 50px;
+    min-height: inherit;
+    height: 100%;
+    background: #e7e7e7;
+    color: #646464;
+    line-height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid #e0e0e0;
 }

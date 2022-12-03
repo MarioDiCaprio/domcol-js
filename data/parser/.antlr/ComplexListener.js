@@ -14,39 +14,12 @@ export default class ComplexListener extends antlr4.tree.ParseTreeListener {
 	}
 
 
-	// Enter a parse tree produced by ComplexParser#comment.
-	enterComment(ctx) {
-	}
-
-	// Exit a parse tree produced by ComplexParser#comment.
-	exitComment(ctx) {
-	}
-
-
-	// Enter a parse tree produced by ComplexParser#flag.
-	enterFlag(ctx) {
-	}
-
-	// Exit a parse tree produced by ComplexParser#flag.
-	exitFlag(ctx) {
-	}
-
-
 	// Enter a parse tree produced by ComplexParser#assignment.
 	enterAssignment(ctx) {
 	}
 
 	// Exit a parse tree produced by ComplexParser#assignment.
 	exitAssignment(ctx) {
-	}
-
-
-	// Enter a parse tree produced by ComplexParser#annotation.
-	enterAnnotation(ctx) {
-	}
-
-	// Exit a parse tree produced by ComplexParser#annotation.
-	exitAnnotation(ctx) {
 	}
 
 

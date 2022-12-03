@@ -31,7 +31,8 @@ function group(start, delimiter, end, args) {
 // assigns the created functions to this object
 this.group = group;
 
-this.tmpStart = [];
+// The parsed lines to prepend to the start of the document
+this.tmpStart = ['vec2 colormode = vec2(0, 0);'];
 
 // The lines of the parsed code in GLSL. They are merged later.
 this.tmp = [];
@@ -47,7 +48,7 @@ this.result = '';
 
 
 parse:
-    (assignment SEMICOLON | comment | flag)*
+    assignment
     {
         for (let key in this.variables) {
             this.tmpStart.push(`vec2 ${key} = ${this.variables[key]};`);
@@ -61,25 +62,8 @@ parse:
 ;
 
 
-comment:
-    '#' ~('#')* '#'
-;
-
-
-flag:
-    FLAG e=element EQUALS n=num
-    {
-        this.variables[$e.value] = $n.value;
-    }
-;
-
-
 assignment:
-    { let annotations = []; }
-    (
-        an=annotation
-        { annotations.push($an.value); }
-    )*
+    isPlot = PLOTTED_FUNC?
     c = element
     {
         let isFunction = false;
@@ -100,79 +84,24 @@ assignment:
     a = addition
     {
         let value = $a.value;
-        if (isFunction) {
-            let useDefaultFunctionBuilder = true;
-
-            for (let annot of annotations) {
-                if (annot === null || annot === undefined)
-                    continue;
-                switch (annot.name) {
-                    case 'Mandelbrot':
-                        useDefaultFunctionBuilder = false;
-                        this.tmp.push(`
-                            vec2 ${name}_MANDELBROT_FUNC(vec2 ${argument}_VAR) {
-                                return ${value};
-                            }
-
-                            vec2 ${name}C(vec2 z_VAR) {
-                                float trapPoint = 1e20;
-                                vec2 z = vec2(0.0, 0.0);
-                                float i = 0.0;
-                                while (absC(z) <= 2.0 && i < fractalMaxIter) {
-                                    z = addC(${name}_MANDELBROT_FUNC(z), z_VAR);
-                                    i += 1.0;
-                                    trapPoint = sin(min( trapPoint, absC(z) ));
-                                }
-                                return vec2(1.5 * trapPoint, i);
-                            }
-                        `);
-                        break;
-                    case 'Plot':
-                        this.tmpEnd.push(`
-                            vec2 plottedFunction(vec2 z_VAR) {
-                                return ${name}C(z_VAR);
-                            }
-                        `);
-                        break;
+        if ($isPlot) {
+            this.tmp.push(`
+                vec2 plottedFunction(vec2 ${argument}_VAR) {
+                    return ${value};
                 }
-            }
-
-            if (useDefaultFunctionBuilder)
-                this.tmp.push(`
-                    vec2 ${name}C(vec2 ${argument}_VAR) {
-                        return ${value};
-                    }
-                `);
+            `);
+        } else if (isFunction) {
+            this.tmp.push(`
+                vec2 ${name}C(vec2 ${argument}_VAR) {
+                    return ${value};
+                }
+            `);
         } else {
             this.tmp.push(`vec2 ${name}_VAR = ${value};`);
         }
     }
 ;
 
-
-annotation returns [value]:
-    { let param = {}; }
-    ANNOT an=element
-    (
-        LEFT
-        (
-            e1=element EQUALS a1=element
-            {
-                let key = $e1.value;
-                let val = $a1.value;
-                param[key] = val;
-            }
-            (
-                COMA e2=element EQUALS a2=element
-                { param[$e2.value] = $a2.value; }
-            )*
-        )?
-        RIGHT
-    )?
-    {
-        $value = { name: $an.text, param: param };
-    }
-;
 
 addition returns [value]:
     pm1 = (PLUS|MINUS)?
@@ -196,41 +125,71 @@ addition returns [value]:
 
 
 multiplication returns [value]:
+    // multiplication
     p1 = power
     { let powers = [$p1.value]; }
     (
-        pm = (TIMES|DIVIDE)
+        TIMES?
         p2 = power
-        {
-            let pm = $pm.text;
-            let p = $p2.value;
-            if (pm == '*') {
-                powers.push(p);
-            } else {
-                powers.push(`divideC(vec2(1.0, 0.0), ${p})`);
-            }
-        }
+        { powers.push($p2.value); }
     )*
     { $value = this.group('multiplyC(', ', ', ')', powers); }
+    |
+    // division
+    DIVIDE
+    LEFT_BRACE p1=power RIGHT_BRACE
+    LEFT_BRACE p2=power RIGHT_BRACE
+    {
+        let d1 = $p1.value;
+        let d2 = $p2.value;
+        $value = `divideC(${d1}, ${d2})`;
+    }
 ;
 
 // power
 power returns [value]:
+    // power with exponent
     f1 = atom
     { let args = [$f1.value]; }
     (
-        POWER
-        f2 = atom
+        POW
+        (
+            f2 = atom
+            |
+            LEFT_BRACE f2 = atom RIGHT_BRACE
+        )
         {
             let f = $f2.value;
             args.push(f);
         }
     )*
     { $value = this.group('powC(', ', ', ')', args); }
+    |
+    // square root
+    SQRT LEFT_BRACE a=addition RIGHT_BRACE
+    { $value = `sqrtC(${$a.value})` }
 ;
 
 // a function, variable, number or nested expression
 atom returns [value]:
+    // predefined constants (without backslash)
+    c=('i' | 'e')
+    { $value = $c.text + '_VAR'; }
+    |
+    // predefined constants (with backslash)
+    '\\' c='pi'
+    { $value = $c.text + '_VAR'; }
+    |
+    // predefined functions
+    '\\'
+    f=('sin' | 'cos' | 'tan' | 'log' | 'ln')
+    LEFT a=addition RIGHT
+    {
+        let funcName = $f.text;
+        let addition = $a.value;
+        $value = `${funcName}C(${addition})`;
+    }
+    |
     // number
     n=num
     { $value = $n.value; }
@@ -279,14 +238,10 @@ num returns [value]:
     }
 ;
 
-// Some non-numeric element, i.e. a function, variable or annotation
+// Some non-numeric element, i.e. a function or variable
 element returns [value]:
-    { let el = []; }
-    (
-        c=CHAR
-        { el.push($c.text); }
-    )+
-    { $value = el.join(''); }
+    c=CHAR
+    { $value = $c.text; }
 ;
 
 
@@ -298,16 +253,19 @@ CHAR: [a-zA-Z];
 
 PLUS:   '+';
 MINUS:  '-';
-TIMES:  '*';
-DIVIDE: '/';
-POWER:  '^';
-LEFT:   '(';
-RIGHT:  ')';
+TIMES:  '\\cdot';
+DIVIDE: '\\frac';
+POW:  '^';
+SQRT: '\\sqrt';
+LEFT:   '(' | '\\left(';
+RIGHT:  ')' | '\\right)';
+LEFT_BRACE: '{';
+RIGHT_BRACE: '}';
 COMA:   ',';
 SEMICOLON: ';';
 EQUALS: '=';
-ANNOT: '@';
-FLAG: '$';
+PLOTTED_FUNC: '@';
 
 
 WS: [ \n\f\r\t]+ -> skip;
+LATEX_WS: '\\ '+ -> skip;

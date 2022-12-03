@@ -1,35 +1,32 @@
 import styles from '../styles/Plot.module.scss';
-import { useState } from "react";
+import dynamic from "next/dynamic";
+import {useState} from "react";
 import {NextPage} from "next";
 import Base from "../components/Base/Base";
 import DomcolGL from "../components/DomcolGL/DomcolGL";
-import Editor from "../components/Editor/Editor";
 import {Drawer, Space} from "antd";
+import MathGLSL from "../data/parser/mathGLSL";
+import {useSelector} from "react-redux";
+import {RootState} from "../redux/store";
 
-
-const INITIAL_EDITOR_CODE =
-    `# defines a flag #
-$colormode=0
-
-# defines a function and plots it #
-@Plot
-f(z) = z;
-`;
+// avoid server-side rendering on Editor to prevent "window is not defined"
+const Editor = dynamic(() => import("../components/Editor/Editor"), { ssr: false });
 
 
 const Plot: NextPage = () => {
-    const [tmp, setTmp] = useState<string>(INITIAL_EDITOR_CODE);
-    const [code, setCode] = useState<string>(INITIAL_EDITOR_CODE);
+    const equations = useSelector((state: RootState) => state.equations);
+    const [code, setCode] = useState<string>(parseEquationsToGlsl());
     const [reload, setReload] = useState<boolean>(false);
     const [isEditorOpen, setIsEditorOpen] = useState<boolean>(false);
 
 
-    function handleCodeChanged(newCode: string) {
-        setTmp(newCode);
+    function parseEquationsToGlsl(): string {
+        let glslPerEquation = equations.map(latex => MathGLSL.parse(latex));
+        return glslPerEquation.join('\n\n');
     }
 
     function handlePlotButtonClicked() {
-        setCode(tmp);
+        setCode(parseEquationsToGlsl());
         setReload(true);
         setTimeout(() => {
             setReload(false);
@@ -68,10 +65,7 @@ const Plot: NextPage = () => {
                     }
                 >
                     <div className={styles.editorDrawerContent}>
-                        <Editor
-                            value={ INITIAL_EDITOR_CODE }
-                            onCodeChanged={handleCodeChanged}
-                        />
+                        <Editor />
                     </div>
                 </Drawer>
 
