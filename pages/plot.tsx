@@ -14,17 +14,30 @@ const Editor = dynamic(() => import("../components/Editor/Editor"), { ssr: false
 
 
 const Plot: NextPage = () => {
+    /** The current equations in the editor. These are parsed to GLSL. */
     const equations = useSelector((state: RootState) => state.equations);
+    /** The current GLSL code that is being rendered. */
     const [code, setCode] = useState<string>(parseEquationsToGlsl());
+    /** Whether a reload is being forced to the {@link DomcolGL} component. Used to re-render. */
     const [reload, setReload] = useState<boolean>(false);
+    /** Whether the editor is open. */
     const [isEditorOpen, setIsEditorOpen] = useState<boolean>(false);
 
 
+    /**
+     * Parses the current {@link equations} to GLSL and returns the result.
+     * @return The corresponding GLSL code
+     */
     function parseEquationsToGlsl(): string {
         let glslPerEquation = equations.map(latex => MathGLSL.parse(latex));
         return glslPerEquation.join('\n\n');
     }
 
+    /**
+     * Called when the plot-button is clicked. Updates the current {@link code}
+     * and forces a reload to the {@link DomcolGL} component. The reload takes
+     * exactly 1ms.
+     */
     function handlePlotButtonClicked() {
         setCode(parseEquationsToGlsl());
         setReload(true);
@@ -33,6 +46,9 @@ const Plot: NextPage = () => {
         }, 1);
     }
 
+    /**
+     * Toggles the editor's state (open/closed).
+     */
     function handleToggleEditor() {
         setIsEditorOpen(!isEditorOpen);
     }

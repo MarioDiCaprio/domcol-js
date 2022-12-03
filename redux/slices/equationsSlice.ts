@@ -31,6 +31,30 @@ const equationsSlice = createSlice({
 });
 
 
-export const {setEquations, addEquation, removeEquation, clearEquations} = equationsSlice.actions;
+/**
+ * A redux action that sets the current editor's equations. These equations are formatted in
+ * `LaTeX` (as a `string`) and contained in an array.
+ */
+export const setEquations = equationsSlice.actions.setEquations;
 
+/**
+ * A redux action that adds an equation to the editor. An equation is a `string`
+ * formatted in `LaTeX`. The added equation is always appended to the last element of
+ * the list of equations.
+ */
+export const addEquation = equationsSlice.actions.addEquation;
+
+/**
+ * A redux action that removes an equation from the editor at the given index.
+ */
+export const removeEquation = equationsSlice.actions.removeEquation;
+
+/**
+ * A redux action that clears all equations in the editor.
+ */
+export const clearEquations = equationsSlice.actions.clearEquations;
+
+/**
+ * This is the redux reducer for {@link equationsSlice}.
+ */
 export default equationsSlice.reducer;
