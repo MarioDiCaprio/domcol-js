@@ -3,7 +3,9 @@ import DomcolGL from "./DomcolGL";
 
 
 const INITIAL_CODE =
-`vec2 plottedFunction(vec2 z) {
+`vec2 colormode = vec2(0, 0);
+
+vec2 plottedFunction(vec2 z) {
     return sinC(z);
 }
 `;
@@ -27,6 +29,8 @@ export default {
 
 export const Main: ComponentStory<typeof DomcolGL> = (props) => {
     return (
-        <DomcolGL {...props}/>
+        <div style={{ width: 1000, height: 600, cursor: 'grab' }}>
+            <DomcolGL {...props}/>
+        </div>
     );
 }
