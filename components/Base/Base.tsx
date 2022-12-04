@@ -1,6 +1,6 @@
 import styles from "./Base.module.scss";
 import React, {ReactNode} from 'react';
-import Navbar from "../Navbar/Navbar";
+import Navbar from "./Navbar/Navbar";
 import Head from "next/head";
 
 

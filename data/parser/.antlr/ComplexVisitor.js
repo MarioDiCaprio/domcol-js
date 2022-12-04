@@ -12,26 +12,14 @@ export default class ComplexVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
-	// Visit a parse tree produced by ComplexParser#comment.
-	visitComment(ctx) {
-	  return this.visitChildren(ctx);
-	}
-
-
-	// Visit a parse tree produced by ComplexParser#flag.
-	visitFlag(ctx) {
-	  return this.visitChildren(ctx);
-	}
-
-
 	// Visit a parse tree produced by ComplexParser#assignment.
 	visitAssignment(ctx) {
 	  return this.visitChildren(ctx);
 	}
 
 
-	// Visit a parse tree produced by ComplexParser#annotation.
-	visitAnnotation(ctx) {
+	// Visit a parse tree produced by ComplexParser#fractal.
+	visitFractal(ctx) {
 	  return this.visitChildren(ctx);
 	}
 
@@ -44,6 +32,12 @@ export default class ComplexVisitor extends antlr4.tree.ParseTreeVisitor {
 
 	// Visit a parse tree produced by ComplexParser#multiplication.
 	visitMultiplication(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by ComplexParser#fractionOrPower.
+	visitFractionOrPower(ctx) {
 	  return this.visitChildren(ctx);
 	}
 

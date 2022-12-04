@@ -4,10 +4,6 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    
-    :global {
-    
-    }
 }
 
 .domainColoringWrapper {
@@ -22,11 +18,11 @@
             padding: 0;
         }
         .ant-drawer-header {
-            background: #2a2a2d;
-            border-bottom: 1px solid #3b3b3b;
+            background: #e7e7e7;
+            border-bottom: 1px solid #c5c5c5;
         }
         .ant-drawer-title {
-            color: white;
+            color: black;
             font-family: "Montserrat Alternates", serif;
         }
         .ant-drawer-close {

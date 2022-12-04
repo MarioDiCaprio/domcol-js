@@ -167,6 +167,18 @@ bool isInBounds(float x,float min,float max){
     return(x>=min)&&(x<=max);
 }
 
+vec2 Mandelbrot(vec2 z_VAR) {
+    float trapPoint = 1e20;
+    vec2 z = vec2(0.0, 0.0);
+    float i = 0.0;
+    while (absC(z) <= 2.0 && i < fractalMaxIter) {
+        z = addC(powC(z, vec2(2.0, 0.0)), z_VAR);
+        i += 1.0;
+        trapPoint = min( trapPoint, absC(z) );
+    }
+    return vec2(1.5 * trapPoint, i);
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 // CubeHelixRainbow

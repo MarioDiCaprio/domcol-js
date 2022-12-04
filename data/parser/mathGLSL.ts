@@ -14,7 +14,10 @@ namespace MathGLSL {
      * @param input The code as math
      * @returns The code in GLSL
      */
-    export function parse(input: string): string {
+    export function parse(input: string | undefined): string {
+        if (!input) {
+            return '';
+        }
         const chars = new antlr4.InputStream(input);
         const lexer = new ComplexLexer(chars);
         const tokens = new antlr4.CommonTokenStream(lexer);

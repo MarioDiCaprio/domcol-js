@@ -1,41 +1,54 @@
 import styles from '../styles/Plot.module.scss';
-import { useState } from "react";
+import dynamic from "next/dynamic";
+import {useState} from "react";
 import {NextPage} from "next";
 import Base from "../components/Base/Base";
-import DomcolGL from "../components/DomcolGL/DomcolGL";
-import Editor from "../components/Editor/Editor";
+import DomcolGL from "../components/_plot/DomcolGL/DomcolGL";
 import {Drawer, Space} from "antd";
+import MathGLSL from "../data/parser/mathGLSL";
+import {useSelector} from "react-redux";
+import {RootState} from "../redux/store";
 
-
-const INITIAL_EDITOR_CODE =
-    `# defines a flag #
-$colormode=0
-
-# defines a function and plots it #
-@Plot
-f(z) = z;
-`;
+// avoid server-side rendering on Editor to prevent "window is not defined"
+const Editor = dynamic(() => import("../components/_plot/Editor/Editor"), { ssr: false });
 
 
 const Plot: NextPage = () => {
-    const [tmp, setTmp] = useState<string>(INITIAL_EDITOR_CODE);
-    const [code, setCode] = useState<string>(INITIAL_EDITOR_CODE);
+    /** The current equations in the editor. These are parsed to GLSL. */
+    const equations = useSelector((state: RootState) => state.equations);
+    /** The current GLSL code that is being rendered. */
+    const [code, setCode] = useState<string>(parseEquationsToGlsl());
+    /** Whether a reload is being forced to the {@link DomcolGL} component. Used to re-render. */
     const [reload, setReload] = useState<boolean>(false);
+    /** Whether the editor is open. */
     const [isEditorOpen, setIsEditorOpen] = useState<boolean>(false);
 
 
-    function handleCodeChanged(newCode: string) {
-        setTmp(newCode);
+    /**
+     * Parses the current {@link equations} to GLSL and returns the result.
+     * @return The corresponding GLSL code
+     */
+    function parseEquationsToGlsl(): string {
+        let glslPerEquation = equations.map(latex => MathGLSL.parse(latex));
+        return glslPerEquation.join('\n\n');
     }
 
+    /**
+     * Called when the plot-button is clicked. Updates the current {@link code}
+     * and forces a reload to the {@link DomcolGL} component. The reload takes
+     * exactly 1ms.
+     */
     function handlePlotButtonClicked() {
-        setCode(tmp);
+        setCode(parseEquationsToGlsl());
         setReload(true);
         setTimeout(() => {
             setReload(false);
         }, 1);
     }
 
+    /**
+     * Toggles the editor's state (open/closed).
+     */
     function handleToggleEditor() {
         setIsEditorOpen(!isEditorOpen);
     }
@@ -68,10 +81,7 @@ const Plot: NextPage = () => {
                     }
                 >
                     <div className={styles.editorDrawerContent}>
-                        <Editor
-                            value={ INITIAL_EDITOR_CODE }
-                            onCodeChanged={handleCodeChanged}
-                        />
+                        <Editor />
                     </div>
                 </Drawer>
 

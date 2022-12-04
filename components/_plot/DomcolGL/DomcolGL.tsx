@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import { useGesture } from '@use-gesture/react';
-import { loadDomainColoringImports } from '../../data/shaders';
-import MathGLSL from '../../data/parser/mathGLSL';
+import { loadDomainColoringImports } from '../../../data/shaders';
 import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
 
@@ -146,7 +145,7 @@ const DomcolGL: React.FC<DomColGLProps> = ({
         uniform float screenHeight;
         uniform vec2 domainX, domainY;
 
-        ${ MathGLSL.parse(code) }
+        ${ code }
 
         void main() {
             vec2 z = vec2(
