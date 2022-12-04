@@ -1,7 +1,7 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 
-type EquationRegistry = Array<string>;
+type EquationRegistry = Array<string | undefined>;
 
 const initialState: EquationRegistry = ['@f \\left( x \\right) = x'];
 
@@ -15,7 +15,7 @@ const equationsSlice = createSlice({
             return [...action.payload];
         },
 
-        addEquation: (state, action: PayloadAction<string>) => {
+        addEquation: (state, action: PayloadAction<EquationRegistry[number]>) => {
             return [...state, action.payload];
         },
 
