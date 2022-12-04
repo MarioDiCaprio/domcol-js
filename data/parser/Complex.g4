@@ -84,7 +84,7 @@ assignment:
     a = addition
     {
         let value = $a.value;
-        if ($isPlot) {
+        if ($isPlot.text) {
             this.tmpStart.push('vec2 colormode = vec2(0, 0);');
             this.tmpEnd.push(`
                 vec2 plottedFunction(vec2 ${argument}_VAR) {

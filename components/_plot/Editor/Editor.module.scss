@@ -1,12 +1,16 @@
 .context {
     width: 100%;
     height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    user-select: none;
 }
 
 .equation {
     width: 100%;
     min-height: 55px;
     height: fit-content;
+    padding-right: 20px;
     display: flex;
     align-items: center;
     border-bottom: 1px solid #e0e0e0;
@@ -15,6 +19,8 @@
 
 .equationIndex {
     width: 50px;
+    max-width: 50px;
+    min-width: 50px;
     min-height: inherit;
     height: 100%;
     background: #e7e7e7;
@@ -24,4 +30,36 @@
     justify-content: center;
     align-items: center;
     border-right: 1px solid #e0e0e0;
+}
+
+.deleteEquationButton {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #d3d3d3;
+    border-radius: 5px;
+    background: #eaeaea;
+}
+
+.toolbar {
+    width: 100%;
+    height: 50px;
+    padding: 5px 30px 5px 30px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 15px;
+    background: #e7e7e7;
+    border-bottom: 1px solid #bebebe;
+    div {
+        height: 30px;
+        min-width: 30px;
+        background: white;
+        border: 1px solid #bebebe;
+        color: #656565;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 }

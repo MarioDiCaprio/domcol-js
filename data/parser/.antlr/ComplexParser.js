@@ -225,7 +225,7 @@ export default class ComplexParser extends antlr4.Parser {
 	        localctx.a = this.addition();
 
 	                let value = localctx.a.value;
-	                if (localctx.isPlot) {
+	                if ((localctx.isPlot===null ? null : localctx.isPlot.text)) {
 	                    this.tmpStart.push('vec2 colormode = vec2(0, 0);');
 	                    this.tmpEnd.push(`
 	                        vec2 plottedFunction(vec2 ${argument}_VAR) {
