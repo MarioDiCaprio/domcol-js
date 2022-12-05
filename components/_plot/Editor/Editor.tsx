@@ -137,7 +137,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ onAdd, onClear }) => {
             }}
         >
             <motion.div onClick={props.onClick} {...buttonMotion}>
-                <AddIcon />
+                { props.children }
             </motion.div>
         </Tooltip>
     );
