@@ -9,10 +9,6 @@ const Learn: NextPage = () => {
         <Base title="DomcolJS | Learn">
             <div className={styles.context}>
 
-                <div className={styles.sidebar}>
-
-                </div>
-
                 <div className={styles.content}>
 
                     <div className={styles.section}>

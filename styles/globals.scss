@@ -5,11 +5,13 @@
 // Google Fonts: 'Source Code Pro'
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
 
+@import "colors";
+
 
 html,
 body {
     padding: 0;
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    background: $background !important;
+    $color: $primary !important;
 }

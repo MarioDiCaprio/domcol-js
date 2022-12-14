@@ -1,4 +1,9 @@
-$dark: #070707;
-$light: #fcfcfc;
-$primary: #1f9bff;
-$secondary: #2d51ad;
+$vibrant-light: #FB934E;
+$vibrant: #F22840;
+$vibrant-dark: #930542;
+$vibrant-gradient: linear-gradient(170deg, $vibrant-light, $vibrant, $vibrant-dark);
+
+$primary: #000000;
+$secondary: #626262;
+
+$background: #f8f8f8;

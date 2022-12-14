@@ -25,7 +25,7 @@ const Base: React.FC<BaseProps> = ({ title, children }) => {
             </div>
 
             {/* Actual Content */}
-            <main className={styles.main}>
+            <main>
                 { children }
             </main>
 
