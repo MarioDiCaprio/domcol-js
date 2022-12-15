@@ -71,7 +71,7 @@ const Plot: NextPage = () => {
                     placement="right"
                     open={isEditorOpen}
                     onClose={handleToggleEditor}
-                    width="600px"
+                    width="fit-content"
                     extra={
                         <Space>
                             <button className={styles.closeEditorButton} onClick={handleToggleEditor}>
@@ -87,13 +87,13 @@ const Plot: NextPage = () => {
 
                 {/* Nav with editor buttons */}
                 <nav className={styles.editorButtonsNav}>
-                    {/* Plot current code */}
-                    <button className={styles.plotButton} onClick={handlePlotButtonClicked}>
-                        Plot
-                    </button>
                     {/* Open editor */}
                     <button className={styles.openEditorButton} onClick={handleToggleEditor}>
                         Edit
+                    </button>
+                    {/* Plot current code */}
+                    <button className={styles.plotButton} onClick={handlePlotButtonClicked}>
+                        Plot
                     </button>
                 </nav>
 

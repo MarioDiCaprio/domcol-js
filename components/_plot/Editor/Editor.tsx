@@ -86,7 +86,15 @@ const Equation: React.FC<EquationProps> = ({ index, initial = "", onChange, onDe
 
             {/* The editable math field from MathQuill. */}
             <EditableMathField
-                style={{ width: '100%', border: 'none', paddingLeft: '10px' }}
+                style={{
+                    width: 'calc(100% - 120px)',
+                    border: 'none',
+                    marginLeft: '52px',
+                    paddingLeft: '20px',
+                    minHeight: '55px',
+                    display: 'flex',
+                    alignItems: 'center'
+                }}
                 latex={initial}
                 config={{
                     autoCommands: 'pi sqrt Re Im Mandelbrot',

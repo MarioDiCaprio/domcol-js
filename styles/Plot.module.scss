@@ -1,3 +1,6 @@
+@import "colors";
+
+
 .context {
     width: 100%;
     height: 100%;
@@ -35,6 +38,7 @@
 }
 
 .editorDrawerContent {
+    max-width: 100vw;
     width: 600px;
     height: 100%;
     background: transparent;
@@ -48,14 +52,14 @@
     height: 30px;
     border: none;
     border-radius: 5px;
-    background: red;
+    background: $vibrant;
     color: white;
     cursor: pointer;
     font-family: "Montserrat Alternates", serif;
     font-size: large;
     transition: 0.3s;
     &:hover {
-        background: #da2323;
+        background: $vibrant-dark;
         transition: 0.3s;
     }
 }
@@ -86,20 +90,12 @@
     }
 }
 
-.plotButton {
-    background: #6abaff;
-    color: white;
+.plotButton, .openEditorButton {
+    background: $background;
+    color: $vibrant;
     &:hover {
-        background: #319cf8;
-        transition: 0.3s;
-    }
-}
-
-.openEditorButton {
-    background: #ffeb61;
-    color: white;
-    &:hover {
-        background: #efd52b;
+        background: $vibrant;
+        color: white;
         transition: 0.3s;
     }
 }
