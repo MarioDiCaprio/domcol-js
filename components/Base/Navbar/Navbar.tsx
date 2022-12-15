@@ -87,8 +87,13 @@ const Navbar: React.FC = () => {
         return (
             <div className={styles.context}>
 
-                <div className={styles.logoWrapper}>
-                    <img src="/logo100.png" alt="" />
+                <div className={styles.titleWrapper}>
+                    <div className={styles.logoWrapper}>
+                        <img src="/logo100.png" alt="" />
+                    </div>
+                    <span className={styles.title}>
+                    Domcol-JS
+                </span>
                 </div>
 
                 <AnimatePresence>
