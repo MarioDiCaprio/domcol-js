@@ -4,9 +4,6 @@ import { loadDomainColoringImports } from '../../../data/shaders';
 import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
 
-// lethargy to enable scroll on the window
-const { Lethargy } = require('lethargy');
-const lethargy = new Lethargy();
 
 /**
  * This interface represents all options for domain coloring.
@@ -66,11 +63,12 @@ const DomcolGL: React.FC<DomColGLProps> = ({
 
     // imports to prepend to the fragment shader
     const domcolImports = loadDomainColoringImports();
+    const ref = useRef(null);
     // reference to the shader material
     const shaderRef = useRef<JSX.IntrinsicElements['shaderMaterial']>();
 
     // Gesture events to do things such as moving and zooming  */
-    const bind = useGesture({
+    useGesture({
         /** Drags the plane around and 'moves' the domain of the plot */
         onDrag: dragProps => {
             if (shaderRef.current !== undefined && shaderRef.current.uniforms !== undefined) {
@@ -89,26 +87,36 @@ const DomcolGL: React.FC<DomColGLProps> = ({
         },
         /** Zooms the plot */
         onWheel: wheelProps => {
-            if (wheelProps.last === undefined || shaderRef.current === undefined || shaderRef.current.uniforms === undefined) {
+            if (shaderRef.current === undefined || shaderRef.current.uniforms === undefined) {
                 return;
             }
-            let direction = lethargy.check(wheelProps.event);
-            if (direction && !wheelProps.memo) {
-                console.log(direction);
-                let domX = shaderRef.current.uniforms['domainX'].value;
-                let domY = shaderRef.current.uniforms['domainY'].value;
-                let deltaX = domX.y - domX.x;
-                let deltaY = domY.y - domY.x;
-                let fac = 0.25 * -direction;
-                fac *= (deltaX + deltaY) / 2;
-                domX.x -= fac;
-                domX.y += fac;
-                domY.x -= fac;
-                domY.y += fac;
+            let domX = shaderRef.current.uniforms['domainX'].value;
+            let domY = shaderRef.current.uniforms['domainY'].value;
+            let deltaX = domX.y - domX.x;
+            let deltaY = domY.y - domY.x;
+            let fac = 0.0015 * wheelProps.event.deltaY;
+            fac *= (deltaX + deltaY) / 2;
+            domX.x -= fac;
+            domX.y += fac;
+            domY.x -= fac;
+            domY.y += fac;
+        },
+        onPinch: pinchProps => {
+            if (shaderRef.current === undefined || shaderRef.current.uniforms === undefined) {
+                return;
             }
-            return false;
+            let domX = shaderRef.current.uniforms['domainX'].value;
+            let domY = shaderRef.current.uniforms['domainY'].value;
+            let deltaX = domX.y - domX.x;
+            let deltaY = domY.y - domY.x;
+            let fac = 0.0015 * (pinchProps.delta[0] + pinchProps.delta[1]) / 2;
+            fac *= (deltaX + deltaY) / 2;
+            domX.x -= fac;
+            domX.y += fac;
+            domY.x -= fac;
+            domY.y += fac;
         }
-    });
+    }, { target: ref });
 
     // if imports not yet loaded: return loading screen
     if (domcolImports === undefined || reload) {
@@ -159,13 +167,12 @@ const DomcolGL: React.FC<DomColGLProps> = ({
     ;
 
     return (
-        <div style={{ width: '100%', height: '100%' }} data-test="canvas">
+        <div ref={ref} style={{ width: '100%', height: '100%', touchAction: 'none' }} data-test="canvas">
             <Canvas style={{ width: '100%', height: '100%' }}>
                 {/* @ts-ignore */}
                 <mesh
                     position={[0, 0, 0]}
                     rotation={[0, 0, 0]} scale={[1, 1, 1]}
-                    {...bind()}
                 >
                     <planeBufferGeometry attach="geometry" args={[100, 100]} />
                     <shaderMaterial
