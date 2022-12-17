@@ -98,7 +98,7 @@ const Equation: React.FC<EquationProps> = ({ index, initial = "", onChange, onDe
                 latex={initial}
                 config={{
                     autoCommands: 'pi sqrt Re Im Mandelbrot',
-                    autoOperatorNames: 'sin cos tan log ln Mandelbrot'
+                    autoOperatorNames: 'sin cos tan sinh cosh tanh sec cot csc cis log ln Mandelbrot'
                 }}
                 onChange={(mathField) => {
                     if (isFirstRender) {

@@ -201,12 +201,20 @@ atom returns [value]:
     |
     // predefined functions
     '\\'
-    f=('sin' | 'cos' | 'tan' | 'log' | 'ln' | 'Re' | 'Im')
+    f=('sin' | 'cos' | 'tan' | 'cot' | 'sec' | 'csc' | 'sinh' | 'cosh' | 'tanh' | 'log' | 'ln' | 'Re' | 'Im')
     LEFT a=addition RIGHT
     {
         let funcName = $f.text;
         let addition = $a.value;
         $value = `${funcName}C(${addition})`;
+    }
+    |
+    // predefined functions (with \operatorname{...})
+    '\\operatorname{' f='cis' '}' LEFT a=addition RIGHT
+    {
+        let operatorName = $f.text;
+        let operatorArg = $a.value;
+        $value = `${operatorName}C(${operatorArg})`;
     }
     |
     // number
