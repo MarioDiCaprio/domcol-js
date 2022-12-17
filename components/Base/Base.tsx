@@ -6,12 +6,13 @@ import Head from "next/head";
 
 interface BaseProps {
     title: string;
+    style?: React.CSSProperties;
     children?: ReactNode;
 }
 
-const Base: React.FC<BaseProps> = ({ title, children }) => {
+const Base: React.FC<BaseProps> = ({ title, style, children }) => {
     return (
-        <div className={styles.context}>
+        <div className={styles.context} style={style}>
 
             {/* Document Head */}
             <Head>
