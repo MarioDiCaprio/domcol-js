@@ -25,13 +25,21 @@
     h1, h2 {
         text-align: left;
     }
-    a {
-        color: #2fb0ff;
-        text-decoration: none;
-        transition: 0.3s;
-        &:hover {
-            color: #0080ff;
-            transition: 0.3s;
+    table {
+        margin-top: 20px;
+        td, th {
+            max-width: 500px;
+            padding-right: 20px;
+            padding-bottom: 10px;
+        }
+    }
+    @media(max-width: 500px) {
+        table {
+            td, th {
+                &:first-child {
+                    display: none;
+                }
+            }
         }
     }
 }

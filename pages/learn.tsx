@@ -59,6 +59,123 @@ const Learn: NextPage = () => {
                         </ul>
                     </div>
 
+                    <div className={styles.section}>
+                        <h1>How do I plot functions?</h1>
+                        Plotting a function is very easy: Simply open up the editor and define
+                        your functions! Note that functions and variables consist of only one
+                        letter. Also, the function that you want to plot should be prefixed with "@".
+
+                        <h2>Built-In functions</h2>
+                        You can utilize the following built-in functions:
+                        <table>
+                            <tr>
+                                <th>Function</th>
+                                <th>Syntax</th>
+                                <th>Description</th>
+                            </tr>
+                            <tr>
+                                <td><MathJax raw math="\sin" /></td>
+                                <td><code>sin</code></td>
+                                <td>Calculates the sine of the given number.</td>
+                            </tr>
+                            <tr>
+                                <td><MathJax raw math="\cos" /></td>
+                                <td><code>cos</code></td>
+                                <td>Calculates the cosine of the given number.</td>
+                            </tr>
+                            <tr>
+                                <td><MathJax raw math="\tan" /></td>
+                                <td><code>tan</code></td>
+                                <td>Calculates the tangent of the given number.</td>
+                            </tr>
+                            <tr>
+                                <td><MathJax raw math="\sinh" /></td>
+                                <td><code>sinh</code></td>
+                                <td>Calculates the hyperbolic sine of the given number.</td>
+                            </tr>
+                            <tr>
+                                <td><MathJax raw math="\cosh" /></td>
+                                <td><code>cosh</code></td>
+                                <td>Calculates the hyperbolic cosine of the given number.</td>
+                            </tr>
+                            <tr>
+                                <td><MathJax raw math="\tanh" /></td>
+                                <td><code>tanh</code></td>
+                                <td>Calculates the hyperbolic tangent of the given number.</td>
+                            </tr>
+                            <tr>
+                                <td><MathJax raw math="\sec" /></td>
+                                <td><code>sec</code></td>
+                                <td>Calculates the secant of the given number.</td>
+                            </tr>
+                            <tr>
+                                <td><MathJax raw math="\csc" /></td>
+                                <td><code>csc</code></td>
+                                <td>Calculates the cosecant of the given number.</td>
+                            </tr>
+                            <tr>
+                                <td><MathJax raw math="\cot" /></td>
+                                <td><code>cot</code></td>
+                                <td>Calculates the cotangent of the given number.</td>
+                            </tr>
+                            <tr>
+                                <td><MathJax raw math="\text{cis}" /></td>
+                                <td><code>cis</code></td>
+                                <td>Defined as: <br/> <MathJax raw math="\text{cis}(x) = \cos(x) + i \sin(x)" /></td>
+                            </tr>
+                            <tr>
+                                <td><MathJax raw math="\log" /></td>
+                                <td><code>log</code></td>
+                                <td>Calculates the logarithm (base <MathJax math="10" />)  of the given number.</td>
+                            </tr>
+                            <tr>
+                                <td><MathJax raw math="\ln" /></td>
+                                <td><code>ln</code></td>
+                                <td>Calculates the natural logarithm of the given number.</td>
+                            </tr>
+                            <tr>
+                                <td><MathJax raw math="\Re" /></td>
+                                <td><code>Re</code></td>
+                                <td>Extracts the given number's real part.</td>
+                            </tr>
+                            <tr>
+                                <td><MathJax raw math="\Im" /></td>
+                                <td><code>Im</code></td>
+                                <td>
+                                    Extracts the given number's imaginary part.
+                                    Note that the returned number is real.
+                                </td>
+                            </tr>
+                        </table>
+
+                        <h2>Built-In constants</h2>
+                        You can utilize the following built-in constants:
+                        <table>
+                            <tr>
+                                <tr>
+                                    <th>Function</th>
+                                    <th>Syntax</th>
+                                    <th>Description</th>
+                                </tr>
+                                <tr>
+                                    <td><MathJax raw math="\pi"/></td>
+                                    <td><code>pi</code></td>
+                                    <td>The number <MathJax raw math="\pi \approx 3.141592"/></td>
+                                </tr>
+                                <tr>
+                                    <td><MathJax raw math="e"/></td>
+                                    <td><code>e</code></td>
+                                    <td>The number <MathJax raw math="e \approx 2.718281"/></td>
+                                </tr>
+                            </tr>
+                        </table>
+
+                        <h2>Fractals</h2>
+                        Currently, there is only one fractal available, namely the famous <i>Mandelbrot Set</i>.
+                        To plot it, simply type <code>Mandelbrot</code> in the editor (Note: No prefix "@" and no
+                        function definition, just the word!). It is colored using a technique called <i>orbit trap</i>.
+                    </div>
+
                 </div>
 
             </div>
