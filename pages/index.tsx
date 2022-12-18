@@ -20,7 +20,7 @@ const sectionMotion: MotionProps = {
 
 export default function Home() {
     return (
-        <Base title="DomcolJS | Home">
+        <Base title="DomcolJS | Home" style={{ overflowX: 'hidden' }}>
 
             {/* Preview Carousel */}
             <div className={styles.carouselWrapper}>
@@ -45,6 +45,17 @@ export default function Home() {
                         for plotting mathematical functions. Specifically, this web-app plots complex-valued
                         functions using a method called <i>Domain Coloring</i>.
                     </motion.p>
+                </motion.div>
+
+                <motion.div
+                    className={styles.footer}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.7, delay: 2.1 }}
+                >
+                    <p>
+                        designed & built by <a href="https://mariodicaprio.vercel.app">Mario Di Caprio</a>
+                    </p>
                 </motion.div>
 
             </div>

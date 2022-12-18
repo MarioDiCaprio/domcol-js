@@ -29,3 +29,17 @@
 .about {
     @include Section();
 }
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 150px 20px 10px 20px;
+    font-size: 12px;
+    font-family: "Source Code Pro", serif;
+    color: #606060;
+    a {
+        color: $vibrant;
+        text-decoration: none;
+    }
+}
