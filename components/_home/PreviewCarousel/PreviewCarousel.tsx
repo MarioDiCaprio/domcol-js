@@ -1,11 +1,17 @@
 import styles from "./PreviewCarousel.module.scss";
 import React from "react";
 import Carousel from "react-bootstrap/Carousel";
+import {motion} from "framer-motion";
 
 
 const PreviewCarousel: React.FC = () => {
     return (
-        <div className={styles.wrapper}>
+        <motion.div
+            className={styles.wrapper}
+            initial={{ opacity: 0, translateY: -50 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ duration: 0.7, delay: 0.7 }}
+        >
             <Carousel fade>
 
                 {/* Slide 1 */}
@@ -33,7 +39,7 @@ const PreviewCarousel: React.FC = () => {
                 </Carousel.Item>
 
             </Carousel>
-        </div>
+        </motion.div>
     );
 }
 

@@ -8,6 +8,7 @@ import {Drawer, Space} from "antd";
 import MathGLSL from "../data/parser/mathGLSL";
 import {useSelector} from "react-redux";
 import {RootState} from "../redux/store";
+import {motion} from "framer-motion";
 
 // avoid server-side rendering on Editor to prevent "window is not defined"
 const Editor = dynamic(() => import("../components/_plot/Editor/Editor"), { ssr: false });
@@ -57,7 +58,12 @@ const Plot: NextPage = () => {
         <Base title="DomcolJS | Plot">
 
             {/* Main Container */}
-            <div className={styles.context}>
+            <motion.div
+                className={styles.context}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.7, delay: 0.7 }}
+            >
 
                 {/* Domain Coloring */}
                 <div className={styles.domainColoringWrapper}>
@@ -97,7 +103,7 @@ const Plot: NextPage = () => {
                     </button>
                 </nav>
 
-            </div>
+            </motion.div>
 
         </Base>
     );

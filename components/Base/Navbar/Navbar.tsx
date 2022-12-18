@@ -14,6 +14,12 @@ const menuButtonMotion: MotionProps = {
     exit: { scale: 0 }
 }
 
+const navbarMotion: MotionProps = {
+    initial: { opacity: 0, translateY: -20 },
+    animate: { opacity: 1, translateY: 0 },
+    transition: { duration: 0.7 }
+}
+
 
 interface NavLinkProps {
     url: string;
@@ -85,7 +91,7 @@ const Navbar: React.FC = () => {
 
     if (isSmallScreen) {
         return (
-            <div className={styles.context}>
+            <motion.div className={styles.context} {...navbarMotion}>
 
                 <div className={styles.titleWrapper}>
                     <div className={styles.logoWrapper}>
@@ -111,12 +117,12 @@ const Navbar: React.FC = () => {
 
                 <Sidebar open={isMenuOpen} />
 
-            </div>
+            </motion.div>
         );
     }
 
     return (
-        <div className={styles.context}>
+        <motion.div className={styles.context} {...navbarMotion}>
 
             <div className={styles.titleWrapper}>
                 <div className={styles.logoWrapper}>
@@ -133,7 +139,7 @@ const Navbar: React.FC = () => {
                 <NavLink url="/learn" title="Learn"/>
             </div>
 
-        </div>
+        </motion.div>
     );
 }
 
