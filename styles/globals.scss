@@ -2,6 +2,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates&display=swap');
 // Google Fonts: 'Montserrat'
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+// Google Fonts: 'Comfortaa'
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa&display=swap');
 // Google Fonts: 'Source Code Pro'
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
 
@@ -14,4 +16,5 @@ body {
     margin: 0;
     background: $background !important;
     $color: $primary !important;
+    font-family: 'Comfortaa', serif !important;
 }
