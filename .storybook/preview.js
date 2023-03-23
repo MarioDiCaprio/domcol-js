@@ -1,5 +1,5 @@
 import { RouterContext } from "next/dist/shared/lib/router-context";
-import "../styles/globals.scss";
+import "../src/styles/globals.css";
 import 'antd/dist/antd.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
