@@ -1,9 +1,18 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import Cookies from "universal-cookie";
 
 
 type EquationRegistry = Array<string | undefined>;
 
-const initialState: EquationRegistry = ['@f \\left( x \\right) = x'];
+//////////////////////////////////////////////////////////////////////////////
+
+const cookies = new Cookies();
+let initialState: EquationRegistry = cookies.get('equations');
+if (!initialState) {
+    initialState = ['@f \\left( x \\right) = x'];
+}
+
+//////////////////////////////////////////////////////////////////////////////
 
 
 const equationsSlice = createSlice({
@@ -12,18 +21,24 @@ const equationsSlice = createSlice({
     reducers: {
 
         setEquations: (_state, action: PayloadAction<EquationRegistry>) => {
+            cookies.set('equations', action.payload);
             return [...action.payload];
         },
 
         addEquation: (state, action: PayloadAction<EquationRegistry[number]>) => {
-            return [...state, action.payload];
+            let newState: EquationRegistry = [...state, action.payload];
+            cookies.set('equations', newState);
+            return newState;
         },
 
         removeEquation: (state, action: PayloadAction<number>) => {
-            return state.filter((_eq, index) => index !== action.payload);
+            let newState: EquationRegistry = state.filter((_eq, index) => index !== action.payload);
+            cookies.set('equations', newState);
+            return newState;
         },
 
         clearEquations: (_state) => {
+            cookies.set('equations', []);
             return [];
         }
 
