@@ -2,7 +2,7 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import Cookies from "universal-cookie";
 
 
-type EquationRegistry = Array<string | undefined>;
+export type EquationRegistry = Array<string | undefined>;
 
 //////////////////////////////////////////////////////////////////////////////
 

@@ -5,10 +5,11 @@ import Head from "next/head";
 
 interface BaseProps {
     title: string;
+    navbarMargins?: boolean;
     children?: ReactNode;
 }
 
-const Base: React.FC<BaseProps> = ({ title, children }) => {
+const Base: React.FC<BaseProps> = ({ title, navbarMargins, children }) => {
     return (
         <>
 
@@ -19,6 +20,8 @@ const Base: React.FC<BaseProps> = ({ title, children }) => {
             </Head>
 
             <Navbar />
+
+            { navbarMargins && <div style={{ marginTop: '100px' }} /> }
 
             { children }
 
