@@ -1,6 +1,6 @@
 import React from 'react';
 import Base from "../components/Base/Base";
-import PlotPreviews from "../components/_index/PlotPreviews";
+import PlotPreviews from "../components/_index/PlotReviews/PlotPreviews";
 import {Container} from "@mui/material";
 
 

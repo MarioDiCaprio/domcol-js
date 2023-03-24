@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {CardActions, CardMedia, Grid, IconButton, Snackbar, Tooltip} from "@mui/material";
 import {PreviewCardContext, StyledAlert} from "./PlotPreviews.styles";
 import {RxCopy as CopyIcon} from "react-icons/rx";
-import {EquationRegistry, setEquations} from "../../redux/slices/equationsSlice";
+import {EquationRegistry, setEquations} from "../../../redux/slices/equationsSlice";
 import {useDispatch} from "react-redux";
 
 
