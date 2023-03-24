@@ -1,5 +1,6 @@
 import {configureStore} from "@reduxjs/toolkit";
 import equationsReducer from "./slices/equationsSlice";
+import {cookiesConsentSlice} from "./slices/cookiesConsentSlice";
 
 
 /**
@@ -7,7 +8,8 @@ import equationsReducer from "./slices/equationsSlice";
  */
 export const store = configureStore({
     reducer: {
-        equations: equationsReducer
+        equations: equationsReducer,
+        cookiesConsent: cookiesConsentSlice.reducer
     }
 });
 

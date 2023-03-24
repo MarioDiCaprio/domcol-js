@@ -1,6 +1,7 @@
 import React, {ReactNode} from 'react';
 import Navbar from "../Navbar/Navbar";
 import Head from "next/head";
+import CookiesConsent from "../CookiesConsent/CookiesConsent";
 
 
 interface BaseProps {
@@ -18,6 +19,8 @@ const Base: React.FC<BaseProps> = ({ title, navbarMargins, children }) => {
                 <link rel="icon" href="/favicon.png" />
                 <title>{ title }</title>
             </Head>
+
+            <CookiesConsent />
 
             <Navbar />
 
