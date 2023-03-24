@@ -3,6 +3,7 @@ import Base from "../components/Base/Base";
 import MathJax from "../components/MathJax/MathJax";
 import {Container, Paper, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import {DocTable, Headline, Link, Paragraph, Section, SubHeadline} from "../styles/Learn.styles";
+import Credentials from "../components/Credentials/Credentials";
 
 
 const Learn: NextPage = () => {
@@ -334,6 +335,7 @@ const Learn: NextPage = () => {
                 </Section>
 
             </Container>
+            <Credentials />
         </Base>
     );
 }
