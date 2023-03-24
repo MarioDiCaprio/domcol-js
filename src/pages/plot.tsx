@@ -42,7 +42,7 @@ const Plot: NextPage = () => {
     }
 
     return (
-        <Base title="DomcolJS | Plot">
+        <Base title="Domcol JS | Plot">
 
             {/* Main Container */}
             <Context>

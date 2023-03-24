@@ -8,7 +8,7 @@ import Credentials from "../components/Credentials/Credentials";
 // noinspection JSUnusedGlobalSymbols
 export default function Home() {
     return (
-        <Base title="DomcolJS | Home" navbarMargins>
+        <Base title="Domcol JS | Home" navbarMargins>
             <Container maxWidth="lg">
 
                 <PlotPreviews />
