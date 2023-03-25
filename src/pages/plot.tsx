@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {NextPage} from "next";
 import Base from "../components/Base/Base";
 import DomcolGL from "../components/_plot/DomcolGL/DomcolGL";
@@ -22,6 +22,13 @@ const Plot: NextPage = () => {
     const [reload, setReload] = useState<boolean>(false);
     /** Whether the editor is open. */
     const [isEditorOpen, setIsEditorOpen] = useState<boolean>(false);
+
+    useEffect(() => {
+        setReload(true);
+        setTimeout(() => {
+            setReload(false);
+        }, 100);
+    }, []);
 
 
     function parseEquationsToGlsl(): string {

@@ -1,152 +1,26 @@
-import React, { useRef } from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import { useGesture } from '@use-gesture/react';
 import { loadDomainColoringImports } from '../../../data/shaders';
 import * as THREE from 'three';
-import { Canvas } from '@react-three/fiber';
+import {Canvas} from '@react-three/fiber';
+import PlotInfoPanel from "../PlotInfoPanel/PlotInfoPanel";
+import {autoCalculateDomain, Interval, Point2D, scaleInterval} from "../utils";
+import {ShaderMaterial} from "three";
 
 
-/**
- * This interface represents all options for domain coloring.
- */
-export interface DomColGLProps {
-    /** The GLSL code that contains the function to plot. This function
-     * has to be called `plottedFunction`, which accepts a `vec2` as an
-     * argument and returns a `vec2` as an output.
-     */
-    code: string;
-    /** Whether to force a reload onto the canvas. When set to `true`,
-     * the canvas will not load, but will show a loading screen instead.
-     */
-    reload?: boolean;
-    /** The width of the mesh */
-    width?: number;
-    /** The height of the mesh */
-    height?: number;
-    /** The domain to display */
-    domain?: {
-        /** The x-domain (the real numbers) */
-        x: {
-            /** The minimum x-value */
-            min: number,
-            /** The maximum x-value */
-            max: number
-        },
-        /** The y-domain (the imaginary numbers) */
-        y: {
-            /** The minimum y-value */
-            min: number,
-            /** The maximum y-value */
-            max: number
-        }
-    };
-}
+////////////////////////////////////////////////////////////////////////////////////////
 
-/**
- * This component renders an OpenGL mesh using the Three library.
- * The component is a plane upon which is drawn the domain coloring
- * of a given complex function. For more information, refer to the
- * documentation under `DomainColoringOptions`.
- * @param param0 The settings for this domain coloring mesh
- * @returns The mesh
- * @see DomColGLProps
- */
-const DomcolGL: React.FC<DomColGLProps> = ({
-                                               code,
-                                               reload = false,
-                                               width = 600,
-                                               height = 600,
-                                               domain = {
-                                                   x: { min: -2, max: 2 },
-                                                   y: { min: -2, max: 2 }
-                                               }
-                                           }) => {
+const DOMAIN_COLORING_IMPORTS = loadDomainColoringImports();
 
-    // imports to prepend to the fragment shader
-    const domcolImports = loadDomainColoringImports();
-    const ref = useRef(null);
-    // reference to the shader material
-    const shaderRef = useRef<JSX.IntrinsicElements['shaderMaterial']>();
-
-    // Gesture events to do things such as moving and zooming  */
-    useGesture({
-        /** Drags the plane around and 'moves' the domain of the plot */
-        onDrag: dragProps => {
-            if (shaderRef.current !== undefined && shaderRef.current.uniforms !== undefined) {
-                let [x, y] = dragProps.delta;
-                let domX = shaderRef.current.uniforms['domainX'].value;
-                let domY = shaderRef.current.uniforms['domainY'].value;
-                let offsetX = x / width * (domX.y - domX.x);
-                let offsetY = y / height * (domY.y - domY.x);
-                domX.x -= offsetX;
-                // noinspection JSSuspiciousNameCombination
-                domX.y -= offsetX;
-                // noinspection JSSuspiciousNameCombination
-                domY.x += offsetY;
-                domY.y += offsetY;
-            }
-        },
-        /** Zooms the plot */
-        onWheel: wheelProps => {
-            if (shaderRef.current === undefined || shaderRef.current.uniforms === undefined) {
-                return;
-            }
-            let domX = shaderRef.current.uniforms['domainX'].value;
-            let domY = shaderRef.current.uniforms['domainY'].value;
-            let deltaX = domX.y - domX.x;
-            let deltaY = domY.y - domY.x;
-            let fac = 0.0015 * wheelProps.event.deltaY * (deltaX + deltaY) / 2;
-            domX.x -= fac;
-            domX.y += fac;
-            domY.x -= fac;
-            domY.y += fac;
-        },
-        onPinch: pinchProps => {
-            if (shaderRef.current === undefined || shaderRef.current.uniforms === undefined) {
-                return;
-            }
-            let domX = shaderRef.current.uniforms['domainX'].value;
-            let domY = shaderRef.current.uniforms['domainY'].value;
-            let deltaX = domX.y - domX.x;
-            let deltaY = domY.y - domY.x;
-            let [pinchDX, pinchDY] = pinchProps.delta;
-            let fac = 0.01 * -(pinchDX + pinchDY) * (deltaX + deltaY) / 2;
-            domX.x -= fac;
-            domX.y += fac;
-            domY.x -= fac;
-            domY.y += fac;
-        }
-    }, { target: ref });
-
-    // if imports not yet loaded: return loading screen
-    if (domcolImports === undefined || reload) {
-        return (
-            <div className="d-flex justify-content-center">
-                <div className="spinner-grow text-primary" style={{ marginTop: 350, width: 100, height: 100 }}>
-                    <span className="visually-hidden">Loading...</span>
-                </div>
-            </div>
-        );
+const VERTEX_SHADER = `
+    void main() {
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
+`;
 
-    // if loading imports fails: return error screen
-    if (domcolImports === null) {
-        return (
-            <div className="d-flex justify-content-center text-danger" style={{ marginTop: 350 }}>
-                <h1>Error loading shaders</h1>
-            </div>
-        );
-    }
-
-    const vertexShader =
-        `
-        void main() {
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-        `;
-
-    const fragmentShader =
-        `
-        ${domcolImports}
+function createFragmentShader(code: string): string {
+    return `
+        ${DOMAIN_COLORING_IMPORTS}
         
         uniform float screenWidth;
         uniform float screenHeight;
@@ -162,35 +36,187 @@ const DomcolGL: React.FC<DomColGLProps> = ({
 
             gl_FragColor = domcol(plottedFunction(z), colormode.x);
         }
-        `
-    ;
+    `;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+
+/**
+ * This interface represents all options for domain coloring.
+ */
+export interface DomColGLProps {
+    /** The GLSL code that contains the function to plot. This function
+     * has to be called `plottedFunction`, which accepts a `vec2` as an
+     * argument and returns a `vec2` as an output.
+     */
+    code: string;
+    /** Whether to force a reload onto the canvas. When set to `true`,
+     * the canvas will not load, but will show a loading screen instead.
+     */
+    reload: boolean;
+}
+
+
+/**
+ * This component renders an OpenGL mesh using the Three library.
+ * The component is a plane upon which is drawn the domain coloring
+ * of a given complex function. For more information, refer to the
+ * documentation under `DomainColoringOptions`.
+ */
+const DomcolGL: React.FC<DomColGLProps> = ({ code, reload }) => {
+    // Domain to display, both on the x- and y-axis.
+    const [[minX, maxX], setDomainX] = useState<Interval>([0, 0]);
+    const [[minY, maxY], setDomainY] = useState<Interval>([0, 0]);
+
+    // screen size
+    const [[width, height], setScreenSize] = useState<Point2D>([0, 0]);
+
+    /** Reference to the <div> wrapper */
+    const containerRef = useRef<HTMLDivElement>(null);
+    /** Reference to the shader material */
+    const shaderRef = useRef<JSX.IntrinsicElements['shaderMaterial']>();
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+    const uniforms = useMemo<ShaderMaterial['uniforms']>(() => ({
+        screenWidth:  { value: width  },
+        screenHeight: { value: height },
+        domainX: { value: new THREE.Vector2(minX, maxX) },
+        domainY: { value: new THREE.Vector2(minY, maxY) }
+    }), [width, height, minX, maxX, minY, maxY]);
+
+    const [[uniformsDomainX, uniformsDomainY], setUniformsDomain] = useState<[Interval, Interval]>([[minX, maxX], [minY, maxY]]);
+
+    useEffect(() => {
+        setInterval(() => {
+            if (shaderRef.current?.uniforms) {
+                let domX: THREE.Vector2 = shaderRef.current.uniforms['domainX'].value;
+                let domY: THREE.Vector2  = shaderRef.current.uniforms['domainY'].value;
+                setUniformsDomain([
+                    [domX.x, domX.y], [domY.x, domY.y]
+                ]);
+            }
+        }, 200);
+    }, []);
+
+    /** Sets the shader material's uniforms */
+    function setUniformDomain(domainX: Interval, domainY: Interval) {
+        if (shaderRef.current?.uniforms) {
+            let domX: THREE.Vector2 = shaderRef.current.uniforms['domainX'].value;
+            let domY: THREE.Vector2  = shaderRef.current.uniforms['domainY'].value;
+            domX.x = domainX[0];
+            domX.y = domainX[1]
+            domY.x = domainY[0];
+            domY.y = domainY[1];
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+    function calculateScreenSize(): Point2D {
+        return [
+            window.innerWidth ?? 0,
+            window.innerHeight ?? 0
+        ];
+    }
+
+    // update screen size + domain on every reload
+    useEffect(() => {
+        setScreenSize(calculateScreenSize());
+        let [domainX, domainY] = autoCalculateDomain([width, height], [-2, 2], [-2, 2]);
+        setDomainX(domainX);
+        setDomainY(domainY);
+    }, [reload]);
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+    // Gesture events to do things such as moving and zooming
+    useGesture({
+        /** Drags the plane around and 'moves' the domain of the plot */
+        onDrag: dragProps => {
+            if (shaderRef.current?.uniforms) {
+                let [x, y] = dragProps.delta;
+                let domX = shaderRef.current.uniforms['domainX'].value;
+                let domY = shaderRef.current.uniforms['domainY'].value;
+                let offsetX = x / width * (domX.y - domX.x);
+                let offsetY = y / height * (domY.y - domY.x);
+                domX.x -= offsetX;
+                // noinspection JSSuspiciousNameCombination
+                domX.y -= offsetX;
+                // noinspection JSSuspiciousNameCombination
+                domY.x += offsetY;
+                domY.y += offsetY;
+            }
+        },
+        /** Zooms the plot */
+        onWheel: wheelProps => {
+            if (shaderRef.current?.uniforms) {
+                let domX = shaderRef.current.uniforms['domainX'].value;
+                let domY = shaderRef.current.uniforms['domainY'].value;
+                let fac = (wheelProps.event.deltaY > 0)? 1.15 : 0.85;
+                let scaledX = scaleInterval(fac, [domX.x, domX.y]);
+                let scaledY = scaleInterval(fac, [domY.x, domY.y]);
+                setUniformDomain(scaledX, scaledY);
+            }
+        },
+        onPinch: pinchProps => {
+            if (shaderRef.current?.uniforms) {
+                let domX = shaderRef.current.uniforms['domainX'].value;
+                let domY = shaderRef.current.uniforms['domainY'].value;
+                let [pinchDX, pinchDY] = pinchProps.delta;
+                let fac = (pinchDX + pinchDY > 0)? 1.15 : 0.85;
+                let scaledX = scaleInterval(fac, [domX.x, domX.y]);
+                let scaledY = scaleInterval(fac, [domY.x, domY.y]);
+                setUniformDomain(scaledX, scaledY);
+            }
+        }
+    }, { target: containerRef });
+
+    // if a reload is needed (which it is, every time a re-render is needed)
+    // briefly return nothing. Unmounting the canvas and then remounting it
+    // forces it to reload.
+    // TODO Find a better method, which is unknown as for now!
+    if (reload) {
+        return (
+            <></>
+        );
+    }
+
 
     return (
-        <div ref={ref} style={{ width: '100%', height: '100%', touchAction: 'none' }} data-test="canvas">
-            <Canvas style={{ width: '100%', height: '100%' }}>
-                {/* @ts-ignore */}
-                <mesh
-                    position={[0, 0, 0]}
-                    rotation={[0, 0, 0]} scale={[1, 1, 1]}
-                >
-                    <planeBufferGeometry attach="geometry" args={[100, 100]} />
-                    <shaderMaterial
-                        ref={shaderRef as any}
-                        attach="material"
-                        needsUpdate={true}
-                        uniforms={{
-                            screenWidth:  { value: width  },
-                            screenHeight: { value: height },
-                            domainX: { value: new THREE.Vector2(domain.x.min, domain.x.max) },
-                            domainY: { value: new THREE.Vector2(domain.y.min, domain.y.max) }
-                        }}
-                        vertexShader={ vertexShader }
-                        fragmentShader={ fragmentShader }
-                        side={THREE.DoubleSide}
-                    />
-                </mesh>
-            </Canvas>
-        </div>
+        <>
+            <div style={{ width: '100%', height: '100%', touchAction: 'none' }} ref={containerRef}>
+                <Canvas style={{ width: '100%', height: '100%', touchAction: 'none' }}>
+                    <mesh
+                        position={[0, 0, 0]}
+                        rotation={[0, 0, 0]}
+                        scale={[1, 1, 1]}
+                    >
+                        <planeGeometry attach="geometry" args={[100, 100]} />
+                        <shaderMaterial
+                            ref={shaderRef as any}
+                            attach="material"
+                            needsUpdate={true}
+                            uniformsNeedUpdate={true}
+                            uniforms={uniforms}
+                            vertexShader={VERTEX_SHADER}
+                            fragmentShader={ createFragmentShader(code) }
+                            side={THREE.DoubleSide}
+                        />
+                    </mesh>
+                </Canvas>
+            </div>
+
+
+            <PlotInfoPanel
+                screenWidth={width}
+                screenHeight={height}
+                domainX={uniformsDomainX}
+                domainY={uniformsDomainY}
+            />
+        </>
+
     );
 }
 
