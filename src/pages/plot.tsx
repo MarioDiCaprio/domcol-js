@@ -6,8 +6,10 @@ import DomcolGL from "../components/_plot/DomcolGL/DomcolGL";
 import MathGLSL from "../data/parser/mathGLSL";
 import {useSelector} from "react-redux";
 import {RootState} from "../redux/store";
-import {Context, DomainColoringWrapper} from "../styles/Plot.styles";
+import {AlgorithmSelectionWrapper, Context, DomainColoringWrapper} from "../styles/Plot.styles";
 import FloatingMenu from "../components/_plot/FloatingMenu/FloatingMenu";
+import RiemannSphereGL from "../components/_plot/RiemannSphereGL/RiemannSphereGL";
+import {FormControl, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 
 // avoid server-side rendering on Editor to prevent "window is not defined"
 const Editor = dynamic(() => import("../components/_plot/Editor/Editor"), { ssr: false });
@@ -23,12 +25,15 @@ const Plot: NextPage = () => {
     /** Whether the editor is open. */
     const [isEditorOpen, setIsEditorOpen] = useState<boolean>(false);
 
+    type PlotAlgorithm = 'domain-coloring' | 'riemann-sphere'
+    const [algorithm, setAlgorithm] = useState<PlotAlgorithm>('domain-coloring');
+
     useEffect(() => {
         setReload(true);
         setTimeout(() => {
             setReload(false);
         }, 100);
-    }, []);
+    }, [algorithm]);
 
 
     function parseEquationsToGlsl(): string {
@@ -48,6 +53,10 @@ const Plot: NextPage = () => {
         setIsEditorOpen(!isEditorOpen);
     }
 
+    function handleAlgorithmChange(event: SelectChangeEvent) {
+        setAlgorithm(event.target.value as PlotAlgorithm);
+    }
+
     return (
         <Base title="Domcol JS | Plot">
 
@@ -56,7 +65,14 @@ const Plot: NextPage = () => {
 
                 {/* Domain Coloring */}
                 <DomainColoringWrapper>
-                    <DomcolGL code={code} reload={reload} />
+                    {
+                        algorithm === 'domain-coloring'?
+                            <DomcolGL code={code} reload={reload} />
+                        : algorithm === 'riemann-sphere'?
+                            <RiemannSphereGL code={code} reload={reload} />
+                        :
+                            <></>
+                    }
                 </DomainColoringWrapper>
 
                 {/* Editor */}
@@ -66,6 +82,23 @@ const Plot: NextPage = () => {
                     editClicked={toggleEditor}
                     plotClicked={plotEquations}
                 />
+
+                <AlgorithmSelectionWrapper>
+                    <FormControl>
+                        <Select
+                            variant="outlined"
+                            value={algorithm}
+                            onChange={handleAlgorithmChange}
+                        >
+                            <MenuItem value="domain-coloring">
+                                Domain Coloring
+                            </MenuItem>
+                            <MenuItem value="riemann-sphere">
+                                Riemann Sphere
+                            </MenuItem>
+                        </Select>
+                    </FormControl>
+                </AlgorithmSelectionWrapper>
 
             </Context>
 
