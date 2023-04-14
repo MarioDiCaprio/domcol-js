@@ -1,16 +1,15 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import { useGesture } from '@use-gesture/react';
-import { loadDomainColoringImports } from '../../../data/shaders';
+import {GLSL_FOR_DOMAIN_COLORING} from '../../../../data/shaders';
 import * as THREE from 'three';
 import {Canvas} from '@react-three/fiber';
 import PlotInfoPanel from "../PlotInfoPanel/PlotInfoPanel";
-import {autoCalculateDomain, Interval, Point2D, scaleInterval} from "../utils";
+import {autoCalculateDomain, Interval, Point2D, scaleInterval} from "../../utils";
 import {ShaderMaterial} from "three";
+import {OpenGLPlotAlgorithm} from "../../PlotContext";
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
-
-const DOMAIN_COLORING_IMPORTS = loadDomainColoringImports();
 
 const VERTEX_SHADER = `
     void main() {
@@ -20,7 +19,7 @@ const VERTEX_SHADER = `
 
 function createFragmentShader(code: string): string {
     return `
-        ${DOMAIN_COLORING_IMPORTS}
+        ${GLSL_FOR_DOMAIN_COLORING}
         
         uniform float screenWidth;
         uniform float screenHeight;
@@ -34,7 +33,7 @@ function createFragmentShader(code: string): string {
                 mix(domainY.x, domainY.y, gl_FragCoord.y / screenHeight)
             );
 
-            gl_FragColor = domcol(plottedFunction(z), colormode.x);
+            gl_FragColor = domain_coloring(plottedFunction(z), colormode.x);
         }
     `;
 }
@@ -43,28 +42,12 @@ function createFragmentShader(code: string): string {
 
 
 /**
- * This interface represents all options for domain coloring.
- */
-export interface DomColGLProps {
-    /** The GLSL code that contains the function to plot. This function
-     * has to be called `plottedFunction`, which accepts a `vec2` as an
-     * argument and returns a `vec2` as an output.
-     */
-    code: string;
-    /** Whether to force a reload onto the canvas. When set to `true`,
-     * the canvas will not load, but will show a loading screen instead.
-     */
-    reload: boolean;
-}
-
-
-/**
  * This component renders an OpenGL mesh using the Three library.
  * The component is a plane upon which is drawn the domain coloring
  * of a given complex function. For more information, refer to the
  * documentation under `DomainColoringOptions`.
  */
-const DomcolGL: React.FC<DomColGLProps> = ({ code, reload }) => {
+const DomainColoringGL: React.FC<OpenGLPlotAlgorithm> = ({ code, reload }) => {
     // Domain to display, both on the x- and y-axis.
     const [[minX, maxX], setDomainX] = useState<Interval>([0, 0]);
     const [[minY, maxY], setDomainY] = useState<Interval>([0, 0]);
@@ -220,4 +203,4 @@ const DomcolGL: React.FC<DomColGLProps> = ({ code, reload }) => {
     );
 }
 
-export default DomcolGL;
+export default DomainColoringGL;

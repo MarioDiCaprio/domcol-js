@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Context} from "./PlotInfoPanel.styles";
 import {Paper, Table, TableBody, TableCell, TableHead, TableRow} from "@mui/material";
-import {Interval, transformInterval} from "../utils";
+import {Interval, transformInterval} from "../../utils";
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////

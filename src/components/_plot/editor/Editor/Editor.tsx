@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../../../redux/store";
-import {addEquation, clearEquations, removeEquation, setEquations} from "../../../redux/slices/equationsSlice";
+import {RootState} from "../../../../redux/store";
+import {addEquation, clearEquations, removeEquation, setEquations} from "../../../../redux/slices/equationsSlice";
 import {AnimatePresence, LayoutGroup} from "framer-motion";
 import Equation from "../Equation/Equation";
-import Toolbar from "../Toolbar/Toolbar";
+import Toolbar from "../../Toolbar/Toolbar";
 import {EditorContent, EditorHead} from "./Editor.styles";
 import {Drawer, IconButton} from "@mui/material";
 import {HiMenu as MenuIcon} from "react-icons/hi";

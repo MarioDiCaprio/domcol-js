@@ -1,5 +1,6 @@
 import {configureStore} from "@reduxjs/toolkit";
 import equationsReducer from "./slices/equationsSlice";
+import plotSettingsReducer from "./slices/plotSettingsSlice";
 import {cookiesConsentSlice} from "./slices/cookiesConsentSlice";
 
 
@@ -9,6 +10,7 @@ import {cookiesConsentSlice} from "./slices/cookiesConsentSlice";
 export const store = configureStore({
     reducer: {
         equations: equationsReducer,
+        plotSettings: plotSettingsReducer,
         cookiesConsent: cookiesConsentSlice.reducer
     }
 });

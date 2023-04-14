@@ -1,4 +1,4 @@
-import {Paper, styled} from "@mui/material";
+import {styled} from "@mui/material";
 
 
 export const Context = styled('div')`
@@ -17,10 +17,4 @@ export const DomainColoringWrapper = styled('div')`
   height: 100vh;
   cursor: grab;
   z-index: -100;
-`;
-
-export const AlgorithmSelectionWrapper = styled(Paper)`
-  position: fixed;
-  top: 100px;
-  left: 20px;
 `;

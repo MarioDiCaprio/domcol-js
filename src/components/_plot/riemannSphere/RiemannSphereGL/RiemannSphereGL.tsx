@@ -1,14 +1,13 @@
 import React, {useState} from "react";
 import {Canvas} from '@react-three/fiber';
-import {loadDomainColoringImports} from "../../../data/shaders";
+import {GLSL_FOR_RIEMANN_SPHERE} from "../../../../data/shaders";
 import * as THREE from "three";
 import {OrbitControls} from "@react-three/drei";
 import RiemannSphereSettings from "../RiemannSphereSettings/RiemannSphereSettings";
+import {OpenGLPlotAlgorithm} from "../../PlotContext";
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
-
-const DOMAIN_COLORING_IMPORTS = loadDomainColoringImports();
 
 function createVertexShader(): string {
     return `
@@ -25,14 +24,14 @@ function createFragmentShader(code: string): string {
     return `
         varying vec3 vertexCoord;
     
-        ${DOMAIN_COLORING_IMPORTS}
+        ${GLSL_FOR_RIEMANN_SPHERE}
 
         ${ code }
 
         void main() {
             vec2 z = riemann_sphere(vertexCoord);
             
-            gl_FragColor = domcol(plottedFunction(z), colormode.x);
+            gl_FragColor = domain_coloring(plottedFunction(z), colormode.x);
         }
     `;
 }
@@ -44,23 +43,8 @@ const HELPER_COLOR_DARK: THREE.Color = new THREE.Color('rgb(66,66,66)');
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-/**
- * This interface represents all options for domain coloring.
- */
-export interface RiemannSphereGLProps {
-    /** The GLSL code that contains the function to plot. This function
-     * has to be called `plottedFunction`, which accepts a `vec2` as an
-     * argument and returns a `vec2` as an output.
-     */
-    code: string;
-    /** Whether to force a reload onto the canvas. When set to `true`,
-     * the canvas will not load, but will show a loading screen instead.
-     */
-    reload: boolean;
-}
 
-
-const RiemannSphereGL: React.FC<RiemannSphereGLProps> = ({ code, reload }) => {
+const RiemannSphereGL: React.FC<OpenGLPlotAlgorithm> = ({ code, reload }) => {
     const [subdivisions, setSubdivisions] = useState<number>(100);
 
     const boundingBox = new THREE.Box3(

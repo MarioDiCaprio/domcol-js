@@ -8,7 +8,7 @@
       <excludeFolder url="file://$MODULE_DIR$/public/glsl" />
       <excludeFolder url="file://$MODULE_DIR$/src/data/glsl" />
       <excludeFolder url="file://$MODULE_DIR$/src/data/parser/.antlr" />
-      <excludeFolder url="file://$MODULE_DIR$/src/components/_plot/Editor/mathComponentRegistry/.antlr" />
+      <excludeFolder url="file://$MODULE_DIR$/src/components/_plot/editor/Editor/mathComponentRegistry/.antlr" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
