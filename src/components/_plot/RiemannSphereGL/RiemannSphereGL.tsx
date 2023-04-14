@@ -1,8 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import {Canvas} from '@react-three/fiber';
 import {loadDomainColoringImports} from "../../../data/shaders";
 import * as THREE from "three";
-import { OrbitControls } from "@react-three/drei";
+import {OrbitControls} from "@react-three/drei";
+import RiemannSphereSettings from "../RiemannSphereSettings/RiemannSphereSettings";
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -38,6 +39,10 @@ function createFragmentShader(code: string): string {
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
+const HELPER_COLOR_LIGHT: THREE.Color = new THREE.Color('rgb(110, 110, 110)');
+const HELPER_COLOR_DARK: THREE.Color = new THREE.Color('rgb(66,66,66)');
+
+////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * This interface represents all options for domain coloring.
@@ -56,6 +61,7 @@ export interface RiemannSphereGLProps {
 
 
 const RiemannSphereGL: React.FC<RiemannSphereGLProps> = ({ code, reload }) => {
+    const [subdivisions, setSubdivisions] = useState<number>(100);
 
     const boundingBox = new THREE.Box3(
         new THREE.Vector3(-3, -1.5, -3),
@@ -73,33 +79,39 @@ const RiemannSphereGL: React.FC<RiemannSphereGLProps> = ({ code, reload }) => {
     }
 
     return (
-        <div style={{ width: '100%', height: '100%', touchAction: 'none' }}>
-            <Canvas
-                style={{ width: '100%', height: '100%', touchAction: 'none' }}
-                camera={{ fov: 75, position: [3, 2, 1]}}
-            >
-
-                <box3Helper args={[boundingBox, new THREE.Color('rgb(110, 110, 110)')]} />
-                <OrbitControls dampingFactor={0.075} />
-
-                <mesh
-                    position={[0, 0, 0]}
-                    rotation={[0, 0, 0]}
-                    scale={[1, 1, 1]}
+        <>
+            <div style={{ width: '100%', height: '100%', touchAction: 'none' }}>
+                <Canvas
+                    style={{ width: '100%', height: '100%', touchAction: 'none' }}
+                    camera={{ fov: 75, position: [3, 2, 1]}}
                 >
-                    <sphereGeometry attach="geometry" args={[1, 1000, 1000]} />
-                    <shaderMaterial
-                        attach="material"
-                        needsUpdate={true}
-                        uniformsNeedUpdate={true}
-                        vertexShader={ createVertexShader() }
-                        fragmentShader={ createFragmentShader(code) }
-                        side={THREE.DoubleSide}
-                    />
-                </mesh>
 
-            </Canvas>
-        </div>
+                    <box3Helper args={[boundingBox, HELPER_COLOR_LIGHT]} />
+                    <gridHelper args={[boundingBox.getSize(new THREE.Vector3()).x, 6, HELPER_COLOR_LIGHT, HELPER_COLOR_DARK]} position={[0, boundingBox.min.y, 0]} />
+                    <OrbitControls dampingFactor={0.075} />
+
+                    <mesh
+                        position={[0, 0, 0]}
+                        rotation={[0, 0, 0]}
+                        scale={[1, 1, 1]}
+                    >
+                        <sphereGeometry attach="geometry" args={[1, subdivisions, subdivisions]} />
+                        <shaderMaterial
+                            attach="material"
+                            needsUpdate={true}
+                            uniformsNeedUpdate={true}
+                            vertexShader={ createVertexShader() }
+                            fragmentShader={ createFragmentShader(code) }
+                            side={THREE.DoubleSide}
+                        />
+                    </mesh>
+
+                </Canvas>
+            </div>
+
+            <RiemannSphereSettings onSubdivisionsChange={setSubdivisions} />
+        </>
+
     );
 }
 
