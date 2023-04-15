@@ -36,8 +36,8 @@ const Navbar: React.FC = () => {
                 <Logo>
                     <img src="/logo100.png" alt=""/>
                     <span>
-                    Domcol JS
-                </span>
+                        Complexify
+                    </span>
                 </Logo>
 
                 <IconButton color="primary" onClick={toggleMenuOpen}>
@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
             <Logo>
                 <img src="/logo100.png" alt=""/>
                 <span>
-                    Domcol JS
+                    Complexify
                 </span>
             </Logo>
 

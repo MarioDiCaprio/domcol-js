@@ -8,7 +8,7 @@ import Credentials from "../components/Credentials/Credentials";
 
 const Learn: NextPage = () => {
     return (
-        <Base title="Domcol JS | Learn">
+        <Base title="Complexify | Learn">
 
             <Container maxWidth="md" sx={{ padding: '100px 10px 50px 10px' }}>
 
