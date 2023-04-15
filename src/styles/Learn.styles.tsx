@@ -18,8 +18,9 @@ export const SubHeadline = styled('h2')`
 
 `;
 
-export const Paragraph = styled('p')`
+export const Paragraph = styled('div')`
   color: ${props => props.theme.palette.text.secondary};
+  padding: 10px 0 10px 0;
 `;
 
 export const DocTable = styled(Table)`
