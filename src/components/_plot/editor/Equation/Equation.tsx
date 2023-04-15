@@ -1,9 +1,12 @@
-import {addStyles, EditableMathField} from "react-mathquill";
-import React, {useState} from "react";
+import {addStyles, EditableMathField, MathField} from "react-mathquill";
+import React, {useEffect, useState} from "react";
 import {MdClear as DeleteIcon} from "react-icons/md";
 import {Context, DeleteSection, EquationIndex} from "./Equation.styles";
 import {IconButton} from "@mui/material";
 import {contextMotion} from "./Equation.motion";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "../../../../redux/store";
+import {setEquations} from "../../../../redux/slices/equationsSlice";
 
 // add styles for MathQuill
 addStyles();
@@ -15,8 +18,6 @@ addStyles();
 interface EquationProps {
     /** This equation's index in the editor. */
     index: number;
-    /** The equation's initial text. Default is an empty string. */
-    initial?: string;
     /**
      * A function that is called when the equation's content changes.
      * @param latex The new content as `LaTeX`.
@@ -38,17 +39,23 @@ interface EquationProps {
  * @see EquationProps
  * @see Editor
  */
-const Equation: React.FC<EquationProps> = ({ index, initial = "", onChange, onDelete }) => {
-    /**
-     * Whether the component is first being rendered. It is set to true at first.
-     * In the `onChange` event, since the component was rendered already, it will be
-     * permanently set to false. This is important, because the first `onChange` event
-     * should never be fired, since the equation is being loaded form the redux store.
-     */
-    const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
+const Equation: React.FC<EquationProps> = ({ index, onDelete }) => {
+    const dispatch = useDispatch();
+    const cachedEquations = useSelector((state: RootState) => state.equations);
+
+    const [initial, setInitial] = useState<string | undefined>('');
+    useEffect(() => {
+        setInitial(cachedEquations[index]);
+    }, []);
 
     function handleDeleteButtonClicked() {
         if (onDelete) onDelete(index);
+    }
+
+    function handleChange(field: MathField) {
+        let tmp = [...cachedEquations];
+        tmp[index] = field.latex();
+        dispatch(setEquations(tmp));
     }
 
     return (
@@ -76,13 +83,7 @@ const Equation: React.FC<EquationProps> = ({ index, initial = "", onChange, onDe
                     autoCommands: 'pi sqrt Re Im Mandelbrot',
                     autoOperatorNames: 'sin cos tan sinh cosh tanh sec cot csc cis log ln Mandelbrot'
                 }}
-                onChange={(mathField) => {
-                    if (isFirstRender) {
-                        setIsFirstRender(false);
-                    } else {
-                        if (onChange) onChange(mathField.latex(), index);
-                    }
-                }}
+                onChange={handleChange}
             />
 
             {/* Delete Button */}

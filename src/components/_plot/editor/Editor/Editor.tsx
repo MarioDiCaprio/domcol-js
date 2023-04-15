@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../../../redux/store";
-import {addEquation, clearEquations, removeEquation, setEquations} from "../../../../redux/slices/equationsSlice";
+import {addEquation, clearEquations, removeEquation} from "../../../../redux/slices/equationsSlice";
 import {AnimatePresence, LayoutGroup} from "framer-motion";
 import Equation from "../Equation/Equation";
 import Toolbar from "../../Toolbar/Toolbar";
@@ -34,23 +34,10 @@ const Editor: React.FC<EditorProps> = ({ open, onClose }) => {
             <Equation
                 index={index}
                 key={index.toString()}
-                initial={eq}
-                onChange={handleChange}
                 onDelete={handleRemoveEquation}
             />
         )));
     }, [equations]);
-
-    /**
-     * Called whenever an equation in the editor changes. Updates and
-     * dispatches those changes to the redux store.
-     * @param latex The updated code
-     * @param index The index of the equation that changed
-     */
-    function handleChange(latex: string, index: number) {
-        let tmp = equations.map((eq, i) => i === index? latex : equations[i]);
-        dispatch(setEquations(tmp));
-    }
 
     function handleAddEquation() {
         dispatch(addEquation());
