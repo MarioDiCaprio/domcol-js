@@ -49,12 +49,13 @@ export function scaleInterval(factor: number, interval: Interval): Interval {
  */
 export function autoCalculateDomain(screenSize: Point2D, promptX: Interval, promptY: Interval): [Interval, Interval] {
     const [width, height] = screenSize;
-    const ratio = width / height;
+    let ratio = width / height;
     let domainX: Interval, domainY: Interval;
     if (ratio > 1) {
         domainY = promptY;
         domainX = [promptY[0] * ratio, promptY[1] * ratio];
     } else  {
+        ratio = height / width;
         domainX = promptX;
         domainY = [promptX[0] * ratio, promptX[1] * ratio];
     }
