@@ -13,10 +13,6 @@ const Navbar: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
     const { scrollY } = useScroll();
-    const [isElevated, setIsElevated] = useState<boolean>(false);
-    useMotionValueEvent(scrollY, 'change', val => {
-        setIsElevated(val > 100);
-    });
 
     const scrollVelocity = useVelocity(scrollY);
     const [isHidden, setIsHidden] = useState<boolean>(false);
@@ -31,7 +27,7 @@ const Navbar: React.FC = () => {
 
     if (isSmallScreen) {
         return (
-            <Context elevated={isElevated} hidden={isHidden}>
+            <Context hidden={isHidden}>
 
                 <Logo>
                     <img src="/logo100.png" alt=""/>
@@ -51,7 +47,7 @@ const Navbar: React.FC = () => {
     }
 
     return (
-        <Context elevated={isElevated} hidden={isHidden}>
+        <Context hidden={isHidden}>
 
             <Logo>
                 <img src="/logo100.png" alt=""/>

@@ -2,7 +2,7 @@ import {styled, alpha} from "@mui/material";
 import {motion} from "framer-motion";
 
 
-export const Context = styled(motion.div)<{ elevated: boolean, hidden: boolean }>`
+export const Context = styled(motion.div)<{ hidden: boolean }>`
   width: 100vw;
   height: 75px;
   position: fixed;
@@ -16,7 +16,7 @@ export const Context = styled(motion.div)<{ elevated: boolean, hidden: boolean }
   letter-spacing: 1px;
   background: ${props => alpha(props.theme.palette.background.paper, 0.6)};
   backdrop-filter: blur(5px);
-  box-shadow: ${props => props.elevated? '0 10px 10px rgba(0, 0, 0, 0.2)' : 'none'};
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
   transform: ${props => props.hidden? 'translateY(-80px)' : 'none'};
   transition: 0.3s;
   @media (max-width: ${props => props.theme.breakpoints.values.sm}px) {
