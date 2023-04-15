@@ -1,12 +1,18 @@
 <div align="center" style="margin-top: 20px">
    <img src="public/logo100.png" alt="Logo" />
-   <h1>Domcol JS</h1>
-   <h3>domcol-js.vercel.app</h3>
+   <h1>Complexify</h1>
+   <h3>complexify.vercel.app</h3>
 </div>
 
-This project is a website that plots the
+This project is a website that visualizes
+[complex functions](https://en.wikipedia.org/wiki/Complex_analysis#Complex_functions)
+using standard techniques such as
 [domain coloring](https://en.wikipedia.org/wiki/Domain_coloring)
-of complex-valued functions. It utilizes a parser written in ANTLR 4
+and the
+[stereographic projection](https://en.wikipedia.org/wiki/Stereographic_projection)
+of the
+[Riemann sphere](https://en.wikipedia.org/wiki/Riemann_sphere)
+It utilizes a parser written in ANTLR 4
 that accepts a function definition (written in [LaTeX](https://www.latex-project.org/))
 and outputs code in GLSL, which is then rendered using ThreeJS.
 Because of this, renders are extremely fast and can be interacted
@@ -18,6 +24,7 @@ to prettify LaTeX code.
 
 ![screenshot 1](public/screenshots/screenshot1.png)
 ![screenshot 2](public/screenshots/screenshot2.png)
+![screenshot 3](public/screenshots/screenshot3.png)
 
 # Tech Stack
 
