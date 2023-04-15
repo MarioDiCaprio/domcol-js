@@ -4,19 +4,22 @@ import {PreviewCardContext, StyledAlert} from "./PlotPreviews.styles";
 import {RxCopy as CopyIcon} from "react-icons/rx";
 import {EquationRegistry, setEquations} from "../../../redux/slices/equationsSlice";
 import {useDispatch} from "react-redux";
+import {PlotSettings, updatePlotSettings} from "../../../redux/slices/plotSettingsSlice";
 
 
 interface PreviewCardProps {
     imgSrc: string;
     equations: EquationRegistry;
+    settings: Partial<PlotSettings>;
     onCopy?: () => void;
 }
 
-const PreviewCard: React.FC<PreviewCardProps> = ({ imgSrc, equations, onCopy }) => {
+const PreviewCard: React.FC<PreviewCardProps> = ({ imgSrc, equations, settings, onCopy }) => {
     const dispatch = useDispatch();
 
-    function copyEquations() {
+    function copy() {
         dispatch(setEquations(equations));
+        dispatch(updatePlotSettings(settings));
         if (onCopy) onCopy();
     }
 
@@ -27,7 +30,7 @@ const PreviewCard: React.FC<PreviewCardProps> = ({ imgSrc, equations, onCopy }) 
                 <CardActions>
 
                     <Tooltip title="Copy">
-                        <IconButton color="primary" onClick={copyEquations}>
+                        <IconButton color="primary" onClick={copy}>
                             <CopyIcon />
                         </IconButton>
                     </Tooltip>
@@ -54,12 +57,60 @@ const PlotPreviews: React.FC = () => {
         <>
             <Grid container sx={{ width: '100%' }}>
 
-                <PreviewCard imgSrc="/previews/preview1.png" onCopy={openSnackbar} equations={['@f(x) = \\ln(x) + x']} />
-                <PreviewCard imgSrc="/previews/preview2.png" onCopy={openSnackbar} equations={['@f(x) = \\csc(x)']} />
-                <PreviewCard imgSrc="/previews/preview3.png" onCopy={openSnackbar} equations={['@f(x) = \\sqrt{\\sin(x)}']} />
-                <PreviewCard imgSrc="/previews/preview4.png" onCopy={openSnackbar} equations={['@f(x) = \\tan(x)']} />
-                <PreviewCard imgSrc="/previews/preview5.png" onCopy={openSnackbar} equations={['@f(x) = \\frac{\\sqrt{\\ln(x)}}{x}']} />
-                <PreviewCard imgSrc="/previews/preview6.png" onCopy={openSnackbar} equations={['Mandelbrot']} />
+                {/* ( 1 ) */}
+                <PreviewCard
+                    imgSrc="/previews/preview1.png"
+                    onCopy={openSnackbar}
+                    equations={['@f(x) = \\ln(x) + x']}
+                    settings={{
+                        activePlotAlgorithm: 'domain-coloring'
+                    }}
+                />
+                {/* ( 2 ) */}
+                <PreviewCard
+                    imgSrc="/previews/preview2.png"
+                    onCopy={openSnackbar}
+                    equations={['@f(x) = \\csc(x)']}
+                    settings={{
+                        activePlotAlgorithm: 'domain-coloring'
+                    }}
+                />
+                {/* ( 3 ) */}
+                <PreviewCard
+                    imgSrc="/previews/preview3.png"
+                    onCopy={openSnackbar}
+                    equations={['@f(x) = \\sqrt{\\sin(x)}']}
+                    settings={{
+                        activePlotAlgorithm: 'domain-coloring'
+                    }}
+                />
+                {/* ( 4 ) */}
+                <PreviewCard
+                    imgSrc="/previews/preview4.png"
+                    onCopy={openSnackbar}
+                    equations={['@f(x) = \\sqrt{\\ln(x)}']}
+                    settings={{
+                        activePlotAlgorithm: 'riemann-sphere'
+                    }}
+                />
+                {/* ( 5 ) */}
+                <PreviewCard
+                    imgSrc="/previews/preview5.png"
+                    onCopy={openSnackbar}
+                    equations={['@f(x) = \\sin(x) \\cdot \\ln(x)']}
+                    settings={{
+                        activePlotAlgorithm: 'riemann-sphere'
+                    }}
+                />
+                {/* ( 6 ) */}
+                <PreviewCard
+                    imgSrc="/previews/preview6.png"
+                    onCopy={openSnackbar}
+                    equations={['@f(x) = 2 \\cdot \\tan(x)']}
+                    settings={{
+                        activePlotAlgorithm: 'riemann-sphere'
+                    }}
+                />
 
             </Grid>
             <Snackbar
