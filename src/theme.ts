@@ -1,4 +1,4 @@
-import {createTheme} from "@mui/material";
+import {createTheme, css} from "@mui/material";
 
 
 export const theme = createTheme({
@@ -19,7 +19,21 @@ export const theme = createTheme({
         }
     },
     components: {
+        MuiCssBaseline: {
+            styleOverrides: theme => css`
 
+              *::selection, *::-moz-selection {
+                background: rgba(71, 23, 246, 0.36);
+                color: white;
+              }
+              
+              // mathquill cursor color (for dark mode)
+              .mq-cursor {
+                border-left: 1px solid ${theme.palette.text.primary} !important;
+              }
+              
+            `
+        }
     },
     typography: {
         fontFamily: `"Rubik", sans-serif`,
