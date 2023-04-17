@@ -9,6 +9,7 @@ import {Context, DomainColoringWrapper} from "../styles/Plot.styles";
 import FloatingMenu from "../components/_plot/FloatingMenu/FloatingMenu";
 import PlotContext from "../components/_plot/PlotContext";
 import PlotAlgorithmSelector from "../components/_plot/PlotAlgorithmSelector/PlotAlgorithmSelector";
+import RadialDescriptor from "../components/_plot/RadialDescriptor/RadialDescriptor";
 
 // avoid server-side rendering on Editor to prevent "window is not defined"
 const Editor = dynamic(() => import("../components/_plot/editor/Editor/Editor"), { ssr: false });
@@ -70,6 +71,8 @@ const Plot: NextPage = () => {
                 />
 
                 <PlotAlgorithmSelector />
+
+                <RadialDescriptor />
 
             </Context>
 
