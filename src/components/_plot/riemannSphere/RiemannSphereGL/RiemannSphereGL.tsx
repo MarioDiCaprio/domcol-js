@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {Canvas} from '@react-three/fiber';
 import {GLSL_FOR_RIEMANN_SPHERE} from "../../../../data/shaders";
 import * as THREE from "three";
@@ -7,6 +7,8 @@ import {OrbitControls} from "@react-three/drei";
 import RiemannSphereSettings from "../RiemannSphereSettings/RiemannSphereSettings";
 import {OpenGLPlotAlgorithm} from "../../PlotContext";
 import TextLookingAtCamera from "../../threeJsTools/TextLookingAtCamera";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../../redux/store";
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +71,7 @@ const Z_AXIS_COLOR = new Color('rgb(0, 180, 0)');
 
 
 const RiemannSphereGL: React.FC<OpenGLPlotAlgorithm> = ({ code, reload }) => {
-    const [subdivisions, setSubdivisions] = useState<number>(100);
+    const { riemannSphere } = useSelector((state: RootState) => state.plotSettings);
 
     // if a reload is needed (which it is, every time a re-render is needed)
     // briefly return nothing. Unmounting the canvas and then remounting it
@@ -90,7 +92,7 @@ const RiemannSphereGL: React.FC<OpenGLPlotAlgorithm> = ({ code, reload }) => {
                 >
 
                     {/* Coordinate system axis */}
-                    <group>
+                    <group visible={riemannSphere.axis.visible}>
 
                         {/* origin sphere */}
                         <mesh position={AXIS_ORIGIN}>
@@ -106,9 +108,11 @@ const RiemannSphereGL: React.FC<OpenGLPlotAlgorithm> = ({ code, reload }) => {
                                 <meshBasicMaterial color={X_AXIS_COLOR}/>
                             </mesh>
                             {/* label */}
-                            <TextLookingAtCamera scale={AXIS_LABEL_SCALE} position={X_AXIS_LABEL_POSITION} color={X_AXIS_COLOR}>
-                                X
-                            </TextLookingAtCamera>
+                            <group visible={riemannSphere.axis.labels}>
+                                <TextLookingAtCamera scale={AXIS_LABEL_SCALE} position={X_AXIS_LABEL_POSITION} color={X_AXIS_COLOR}>
+                                    X
+                                </TextLookingAtCamera>
+                            </group>
                         </group>
 
                         {/* y-axis */}
@@ -119,9 +123,11 @@ const RiemannSphereGL: React.FC<OpenGLPlotAlgorithm> = ({ code, reload }) => {
                                 <meshBasicMaterial color="rgb(0, 0, 180)"/>
                             </mesh>
                             {/* label */}
-                            <TextLookingAtCamera scale={AXIS_LABEL_SCALE} position={Y_AXIS_LABEL_POSITION} color={Y_AXIS_COLOR}>
-                                Y
-                            </TextLookingAtCamera>
+                            <group visible={riemannSphere.axis.labels}>
+                                <TextLookingAtCamera scale={AXIS_LABEL_SCALE} position={Y_AXIS_LABEL_POSITION} color={Y_AXIS_COLOR}>
+                                    Y
+                                </TextLookingAtCamera>
+                            </group>
                         </group>
 
                         {/* z-axis */}
@@ -132,9 +138,11 @@ const RiemannSphereGL: React.FC<OpenGLPlotAlgorithm> = ({ code, reload }) => {
                                 <meshBasicMaterial color="rgb(0, 180, 0)"/>
                             </mesh>
                             {/* label */}
-                            <TextLookingAtCamera scale={AXIS_LABEL_SCALE} position={Z_AXIS_LABEL_POSITION} color={Z_AXIS_COLOR}>
-                                Z
-                            </TextLookingAtCamera>
+                            <group visible={riemannSphere.axis.labels}>
+                                <TextLookingAtCamera scale={AXIS_LABEL_SCALE} position={Z_AXIS_LABEL_POSITION} color={Z_AXIS_COLOR}>
+                                    Z
+                                </TextLookingAtCamera>
+                            </group>
                         </group>
 
                     </group>
@@ -145,12 +153,9 @@ const RiemannSphereGL: React.FC<OpenGLPlotAlgorithm> = ({ code, reload }) => {
 
                     <OrbitControls dampingFactor={0.075} />
 
-                    <mesh
-                        position={[0, 0, 0]}
-                        rotation={[0, 0, 0]}
-                        scale={[1, 1, 1]}
-                    >
-                        <sphereGeometry attach="geometry" args={[1, subdivisions, subdivisions]} />
+                    {/* The Riemann Sphere */}
+                    <mesh>
+                        <sphereGeometry attach="geometry" args={[1, riemannSphere.sphere.subdivisions, riemannSphere.sphere.subdivisions]} />
                         <shaderMaterial
                             attach="material"
                             needsUpdate={true}
@@ -164,7 +169,7 @@ const RiemannSphereGL: React.FC<OpenGLPlotAlgorithm> = ({ code, reload }) => {
                 </Canvas>
             </div>
 
-            <RiemannSphereSettings onSubdivisionsChange={setSubdivisions} />
+            <RiemannSphereSettings />
         </>
 
     );
