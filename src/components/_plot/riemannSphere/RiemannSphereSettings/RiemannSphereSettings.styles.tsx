@@ -1,4 +1,4 @@
-import {Divider, Paper, Slider, styled} from "@mui/material";
+import {Paper, Slider, styled} from "@mui/material";
 
 
 export const Context = styled(Paper)`
@@ -7,12 +7,8 @@ export const Context = styled(Paper)`
   bottom: 0;
   margin: 20px;
   width: 300px;
+  max-width: 50vw;
   border: 1px solid ${props => props.theme.palette.text.disabled};
-`;
-
-export const SectionDivider = styled(Divider)`
-  padding: 0;
-  margin: 20px 0 20px 0;
 `;
 
 export const SettingsSlider = styled(Slider)`
