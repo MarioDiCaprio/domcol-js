@@ -20,13 +20,12 @@ const TextLookingAtCamera: React.FC<TextLookingAtCamera> = ({ color, position, s
     return (
         <Text
             ref={ref}
-            children={children}
             color={color}
             position={position}
             scale={scale}
             getObjectsByProperty={undefined}
             getVertexPosition={undefined}
-        />
+        >{ children }</Text>
     );
 }
 
