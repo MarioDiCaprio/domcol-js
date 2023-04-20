@@ -131,7 +131,7 @@ const RiemannSphereSettings: React.FC = () => {
                                     onChange={
                                         event => dispatchSettings({
                                             domainColoring: {
-                                                domainX: [event.target.value as number, riemannSphere.domainColoring.domainX[1]]
+                                                domainX: [event.target.value as unknown as number, riemannSphere.domainColoring.domainX[1]]
                                             }
                                         })
                                     }
@@ -142,7 +142,7 @@ const RiemannSphereSettings: React.FC = () => {
                                     onChange={
                                         event => dispatchSettings({
                                             domainColoring: {
-                                                domainX: [riemannSphere.domainColoring.domainX[0], event.target.value as number]
+                                                domainX: [riemannSphere.domainColoring.domainX[0], event.target.value as unknown as number]
                                             }
                                         })
                                     }
@@ -161,7 +161,7 @@ const RiemannSphereSettings: React.FC = () => {
                                     onChange={
                                         event => dispatchSettings({
                                             domainColoring: {
-                                                domainX: [event.target.value as number, riemannSphere.domainColoring.domainY[1]]
+                                                domainX: [event.target.value as unknown as number, riemannSphere.domainColoring.domainY[1]]
                                             }
                                         })
                                     }
@@ -172,7 +172,7 @@ const RiemannSphereSettings: React.FC = () => {
                                     onChange={
                                         event => dispatchSettings({
                                             domainColoring: {
-                                                domainX: [riemannSphere.domainColoring.domainY[0], event.target.value as number]
+                                                domainX: [riemannSphere.domainColoring.domainY[0], event.target.value as unknown as number]
                                             }
                                         })
                                     }
