@@ -1,7 +1,7 @@
 import {NextPage} from "next";
 import Base from "../components/Base/Base";
 import MathJax from "../components/MathJax/MathJax";
-import {Container, Paper, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import {Container, Divider, Paper, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import {DocTable, Headline, IllustrationWrapper, Link, Paragraph, Section, SubHeadline} from "../styles/Learn.styles";
 import Credentials from "../components/Credentials/Credentials";
 
@@ -23,6 +23,8 @@ const Learn: NextPage = () => {
                         fragment shaders to achieve our goals.
                     </Paragraph>
                 </Section>
+
+                <Divider />
 
                 <Section>
                     <Headline>
@@ -76,15 +78,17 @@ const Learn: NextPage = () => {
                     </Paragraph>
                     <Paragraph>
                         And that's it! To summarize, every number on the complex plane is colored as follows:
-                        <MathJax raw display math="a + bi \mapsto \text{hsv}(h(\theta), 1, b(r))" />
+                        <MathJax raw display math="a + bi \mapsto \text{hsv}(h(\theta), 1, v(r))" />
                         With the following specifications:
                         <ul>
                             <li>
-                                <MathJax raw math="h:[0; 2\pi) \to [0; 360)" /> is continuous and bijective
-                                (ideally, simply convert radians to degrees).
+                                <MathJax raw math="h:[0; 2\pi) \to H \subseteq[0; 360) \subset \mathbb{R}" /> is continuous and bijective
+                                for some arbitrary interval <MathJax math="H"/> (ideally, simply convert radians to degrees).
                             </li>
                             <li>
-                                <MathJax raw math="b:\mathbb{R}^+ \to [0; 1)" /> is continuous and bijective.
+                                <MathJax raw math="v:\mathbb{R}^+ \to V \subseteq [0; 1) \subset \mathbb{R}" /> is continuous
+                                for some arbitrary interval <MathJax math="V"/>. Ideally <MathJax math="v" /> is also
+                                bijective, but this may vary.
                             </li>
                         </ul>
                     </Paragraph>
@@ -106,6 +110,8 @@ const Learn: NextPage = () => {
                     </Paragraph>
                 </Section>
 
+                <Divider />
+
                 <Section>
                     <Headline>
                         How do I plot functions?
@@ -120,7 +126,7 @@ const Learn: NextPage = () => {
                         Built-In functions
                     </SubHeadline>
 
-                    <TableContainer component={Paper}>
+                    <TableContainer variant="outlined" component={Paper}>
                         <DocTable>
                             <TableHead>
 
@@ -311,7 +317,7 @@ const Learn: NextPage = () => {
                         Built-In constants
                     </SubHeadline>
 
-                    <TableContainer component={Paper}>
+                    <TableContainer variant="outlined" component={Paper}>
                         <DocTable>
                             <TableHead>
 

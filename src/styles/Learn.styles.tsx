@@ -2,6 +2,7 @@ import {styled, Table} from "@mui/material";
 
 
 export const Section = styled('div')`
+  margin: 40px 0 40px 0;
   * {
     code {
       font-family: "Source Code Pro", monospace;
