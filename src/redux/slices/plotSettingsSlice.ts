@@ -8,10 +8,13 @@ export interface PlotSettings {
     riemannSphere: {
         sphere: {
             subdivisions: number;
-        }
-        axis: {
+        };
+        domainColoring: {
             visible: boolean;
-            labels: boolean;
+            domainX: [number, number];
+            domainY: [number, number];
+            opacity: number;
+            axes: boolean;
         }
     }
 }
@@ -27,9 +30,12 @@ if (!initialState) {
             sphere: {
                 subdivisions: 100
             },
-            axis: {
+            domainColoring: {
                 visible: true,
-                labels: true
+                domainX: [-2, 2],
+                domainY: [-2, 2],
+                opacity: 0.5,
+                axes: true
             }
         }
     }
