@@ -37,6 +37,11 @@ This website utilizes the following technologies:
 - [MathQuill](http://mathquill.com/)
 - [Material UI](https://mui.com/)
 
+# Flowchart
+
+Here is an illustration of how the rendering process works:
+![screenshot 1](public/screenshots/flowchart.svg)
+
 # Project Structure
 
 This project is structured in the following way:
