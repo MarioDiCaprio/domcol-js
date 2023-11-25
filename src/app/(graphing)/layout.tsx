@@ -1,5 +1,8 @@
 import React, {ReactNode} from "react";
-import Editor from "@/components/app/(graphing)/Editor";
+import dynamic from "next/dynamic";
+
+// disable SSR to prevent "window is not defined"
+const Editor = dynamic(() => import("@/components/app/(graphing)/Editor"), {ssr: false});
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
     return (
