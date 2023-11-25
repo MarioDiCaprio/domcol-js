@@ -6,6 +6,7 @@ export type EquationRegistry = Array<string | undefined>;
 
 //////////////////////////////////////////////////////////////////////////////
 
+// @ts-ignore
 const cookies = new Cookies();
 let initialState: EquationRegistry = cookies.get('equations');
 if (!initialState) {
@@ -15,7 +16,7 @@ if (!initialState) {
 //////////////////////////////////////////////////////////////////////////////
 
 
-const equationsSlice = createSlice({
+export const equationsSlice = createSlice({
     name: 'Equations',
     initialState,
     reducers: {
@@ -68,8 +69,3 @@ export const removeEquation = equationsSlice.actions.removeEquation;
  * A redux action that clears all equations in the editor.
  */
 export const clearEquations = equationsSlice.actions.clearEquations;
-
-/**
- * This is the redux reducer for {@link equationsSlice}.
- */
-export default equationsSlice.reducer;

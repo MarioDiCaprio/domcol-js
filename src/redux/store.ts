@@ -1,7 +1,7 @@
 import {configureStore} from "@reduxjs/toolkit";
-import equationsReducer from "./slices/equationsSlice";
-import plotSettingsReducer from "./slices/plotSettingsSlice";
-import {cookiesConsentSlice} from "./slices/cookiesConsentSlice";
+import {equationsSlice} from "@/redux/slices/equationsSlice";
+import {domainColoringSlice} from "@/redux/slices/domainColoringSlice";
+import {riemannSphereSlice} from "@/redux/slices/riemannSphereSlice";
 
 
 /**
@@ -9,9 +9,9 @@ import {cookiesConsentSlice} from "./slices/cookiesConsentSlice";
  */
 export const store = configureStore({
     reducer: {
-        equations: equationsReducer,
-        plotSettings: plotSettingsReducer,
-        cookiesConsent: cookiesConsentSlice.reducer
+        equations: equationsSlice.reducer,
+        domainColoring: domainColoringSlice.reducer,
+        riemannSphere: riemannSphereSlice.reducer
     }
 });
 

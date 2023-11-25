@@ -21,6 +21,7 @@ export interface PlotSettings {
 
 //////////////////////////////////////////////////////////////////////////////
 
+// @ts-ignore
 const cookies = new Cookies();
 let initialState: PlotSettings = cookies.get('plotSettings');
 if (!initialState) {
