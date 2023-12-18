@@ -6,7 +6,7 @@ import NavbarCloudSync from "@/components/app/NavbarCloudSync";
 
 const Navbar: React.FC = () => {
     return (
-        <div className="w-full h-12 px-5 flex justify-between items-center bg-zinc-800 text-zinc-100 text-xl">
+        <div className=" fixed z-[1000] w-full h-12 px-5 flex justify-between items-center bg-zinc-800 text-zinc-100 text-xl">
             
             <NavbarCloudSync />
             

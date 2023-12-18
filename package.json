@@ -17,6 +17,7 @@
     "framer-motion": "^10.16.5",
     "glslify-loader": "^2.0.0",
     "next": "13.4.7",
+    "next-redux-wrapper": "^8.1.0",
     "raw-loader": "^4.0.2",
     "react": "^18",
     "react-dom": "^18",

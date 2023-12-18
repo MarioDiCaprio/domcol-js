@@ -9,9 +9,11 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
             <body>
                 <ReduxProvider>
                     <Navbar />
-                    <main>
-                        { children }
-                    </main>
+                    <div className="pt-12">
+                        <main>
+                            { children }
+                        </main>
+                    </div>
                 </ReduxProvider>
             </body>
         </html>
