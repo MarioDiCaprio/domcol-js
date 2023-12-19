@@ -32,9 +32,29 @@ vec4 domcol(vec2 z){
     float poleLighteningFactor=1.-pow(2.,-zpolar.y/poleLighteningSharpness);
     float poleLightness=1.-poleLightening*poleLighteningFactor;
     float polarGridFactor=wireframe((vec2(carg,logmag)/polarGridSpacing),lineWidth,1.);
-    float polarGrid=mix(1.-polarGridStrength,1.,polarGridFactor);
+    float polarGrid = showLightGridLines? mix(1.-polarGridStrength,1.,polarGridFactor) : 1.;
     float rectGridFactor=1.-(1.-poleLighteningFactor)*(1.-wireframe((z/rectGridSpacing),lineWidth,1.));
-    float rectGrid=mix(1.-rectGridStrength,1.,rectGridFactor);
+    float rectGrid = showDarkGridLines? mix(1.-rectGridStrength,1.,rectGridFactor) : 1.;
+    
+    if (isMinimalThemeEnabled) {
+        return vec4(
+            mix(
+                vec3(1.),
+                mix(
+                    vec3(0.),
+                    mix(vec3(1.),cubehelixRainbow(carg+.25),poleLightness),
+                    mix(rectGrid,max(rectGrid,1.-polarGridFactor),polarGridStrength)
+                ),
+                mix(
+                    .2,
+                    1.-polarGridFactor,
+                    showDarkGridLines? rectGridFactor + 1. - polarGridFactor : 1.
+                )
+            ),
+            1.
+        );
+    }
+    
     return vec4(
         mix(
             vec3(1.),

@@ -9,22 +9,26 @@ import {transformInterval, useCombinedEditorInputIntoGLSL} from "@/components/ap
 import TextLookingAtCamera from "@/components/app/(graphing)/riemann-sphere/TextLookingAtCamera";
 import {Canvas} from "@react-three/fiber";
 import {OrbitControls} from "@react-three/drei";
-import * as THREE from "three";
 
 
-function sphereVertexShader(): string {
+const RIEMANN_SPHERE_VERTEX_SHADER = `
+    varying vec3 vertexCoord;
+    
+    void main() {
+        vertexCoord = position;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+`;
+
+function useRiemannSphereFragmentShader(): string {
+    const code = useCombinedEditorInputIntoGLSL();
+    const graphSettings = useSelector((state: RootState) => state.graphSettings);
+    
     return `
-        varying vec3 vertexCoord;
+        bool showDarkGridLines = ${ graphSettings.showDarkGridLines };
+        bool showLightGridLines = ${ graphSettings.showLightGridLines };
+        bool isMinimalThemeEnabled = ${ graphSettings.isMinimalThemeEnabled };
         
-        void main() {
-            vertexCoord = position;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-    `;
-}
-
-function sphereFragmentShader(code: string): string {
-    return `
         varying vec3 vertexCoord;
     
         ${GLSL_FOR_RIEMANN_SPHERE}
@@ -41,18 +45,28 @@ function sphereFragmentShader(code: string): string {
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-function domcolVertexShader() {
+const DOMCOL_VERTEX_SHADER = `
+    varying vec3 vertexCoord;
+    
+    void main() {
+        vertexCoord = position;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+`;
+
+function useDomcolFragmentShader(): string {
+    const code = useCombinedEditorInputIntoGLSL();
+    
+    const graphSettings = useSelector((state: RootState) => state.graphSettings);
+    const riemannSphereSettings = useSelector((state: RootState) => state.riemannSphere);
+    
+    const opacity = riemannSphereSettings.domainColoring.opacity;
+    
     return `
-        varying vec3 vertexCoord;
+        bool showDarkGridLines = ${ graphSettings.showDarkGridLines };
+        bool showLightGridLines = ${ graphSettings.showLightGridLines };
+        bool isMinimalThemeEnabled = ${ graphSettings.isMinimalThemeEnabled };
         
-        void main() {
-            vertexCoord = position;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-    `;
-}
-function domcolFragmentShader(code: string, opacity: number): string {
-    return `
         ${GLSL_FOR_DOMAIN_COLORING}
         
         varying vec3 vertexCoord;
@@ -101,16 +115,19 @@ const Z_AXIS_POSITION = new Vector3().copy(AXIS_ORIGIN).add(new Vector3(0, 0, BO
 
 
 const RiemannSphereGL: React.FC = () => {
-    const code = useCombinedEditorInputIntoGLSL();
+    const riemannSphereSettings = useSelector((state: RootState) => state.riemannSphere);
+    
+    const domcolFragmentShader = useDomcolFragmentShader();
+    const sphereFragmentShader = useRiemannSphereFragmentShader();
+    
     const [requiresReload, setRequiresReload] = useState<boolean>(false);
-    const riemannSphere = useSelector((state: RootState) => state.riemannSphere);
 
     useEffect(() => {
         setRequiresReload(true);
         setTimeout(() => {
             setRequiresReload(false);
         }, 200);
-    }, [code, riemannSphere]);
+    }, [domcolFragmentShader, sphereFragmentShader]);
 
     ////////////////////////////////////////////////////////////////////////////////////////
     
@@ -119,12 +136,12 @@ const RiemannSphereGL: React.FC = () => {
         if (domcolShaderRef.current?.uniforms) {
             let domX: Vector2 = domcolShaderRef.current.uniforms['domainX'].value;
             let domY: Vector2  = domcolShaderRef.current.uniforms['domainY'].value;
-            domX.x = riemannSphere.domainColoring.settings.domain.x.min;
-            domX.y = riemannSphere.domainColoring.settings.domain.x.max;
-            domY.x = riemannSphere.domainColoring.settings.domain.y.min;
-            domY.y = riemannSphere.domainColoring.settings.domain.y.max;
+            domX.x = riemannSphereSettings.domainColoring.settings.domain.x.min;
+            domX.y = riemannSphereSettings.domainColoring.settings.domain.x.max;
+            domY.x = riemannSphereSettings.domainColoring.settings.domain.y.min;
+            domY.y = riemannSphereSettings.domainColoring.settings.domain.y.max;
         }
-    }, [riemannSphere]);
+    }, [riemannSphereSettings]);
 
     ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -133,7 +150,7 @@ const RiemannSphereGL: React.FC = () => {
 
     for (let i=0; i<=5; i++) {
         let dx = BOUNDING_BOX_SIZE.x / 5;
-        let num = transformInterval(i*dx, {min: 0, max: BOUNDING_BOX_SIZE.x}, riemannSphere.domainColoring.settings.domain.x);
+        let num = transformInterval(i*dx, {min: 0, max: BOUNDING_BOX_SIZE.x}, riemannSphereSettings.domainColoring.settings.domain.x);
         num = Math.round(num * 100) / 100;
         xAxisNumbers.push(
             <TextLookingAtCamera key={i} scale={AXIS_NUMBERS_SCALE} position={new Vector3(i*dx + BOUNDING_BOX_MIN.x, BOUNDING_BOX_MIN.y, BOUNDING_BOX_MIN.z - 0.4)}>
@@ -145,7 +162,7 @@ const RiemannSphereGL: React.FC = () => {
 
     for (let i=0; i<=5; i++) {
         let dz = BOUNDING_BOX_SIZE.z / 5;
-        let num = transformInterval(i*dz, {min: 0, max: BOUNDING_BOX_SIZE.z}, riemannSphere.domainColoring.settings.domain.y);
+        let num = transformInterval(i*dz, {min: 0, max: BOUNDING_BOX_SIZE.z}, riemannSphereSettings.domainColoring.settings.domain.y);
         num = Math.round(num * 100) / 100;
         yAxisNumbers.push(
             <TextLookingAtCamera key={i} scale={AXIS_NUMBERS_SCALE} position={new Vector3(BOUNDING_BOX_MIN.x - 0.4, BOUNDING_BOX_MIN.y, i*dz + BOUNDING_BOX_MIN.z)}>
@@ -165,21 +182,19 @@ const RiemannSphereGL: React.FC = () => {
         );
     }
 
-    console.log(BOUNDING_BOX_MIN.z)
-    console.log(BOUNDING_BOX_MAX.z)
     return (
         <>
-            <div style={{ width: '100%', height: '100%', touchAction: 'none' }}>
+            <div className="w-full h-full bg-zinc-100 touch-none">
                 <Canvas
                     style={{ width: '100%', height: '100%', touchAction: 'none' }}
                     camera={{ fov: 75, position: [3, 2, 1]}}
                 >
 
                     {/* Coordinate system axis */}
-                    <group visible={riemannSphere.domainColoring.visible && riemannSphere.domainColoring.showAxes}>
+                    <group visible={riemannSphereSettings.domainColoring.visible && riemannSphereSettings.domainColoring.showAxes}>
 
                         {/* x-axis */}
-                        <group visible={riemannSphere.domainColoring.showAxes}>
+                        <group visible={riemannSphereSettings.domainColoring.showAxes}>
                             <mesh position={X_AXIS_POSITION} rotation={new Euler(Math.PI/2, 0, Math.PI/2)}>
                                 <cylinderGeometry args={[AXIS_CYLINDER_RADIUS, AXIS_CYLINDER_RADIUS, BOUNDING_BOX_SIZE.x, 20, 3]} />
                                 <meshBasicMaterial color="#000000" />
@@ -190,7 +205,7 @@ const RiemannSphereGL: React.FC = () => {
                         </group>
 
                         {/* z-axis */}
-                        <group visible={riemannSphere.domainColoring.showAxes}>
+                        <group visible={riemannSphereSettings.domainColoring.showAxes}>
                             <mesh position={Z_AXIS_POSITION} rotation={new Euler(Math.PI/2, 0, 0)}>
                                 <cylinderGeometry args={[AXIS_CYLINDER_RADIUS, AXIS_CYLINDER_RADIUS, BOUNDING_BOX_SIZE.x, 20, 3]} />
                                 <meshBasicMaterial color="#000000" />
@@ -206,26 +221,26 @@ const RiemannSphereGL: React.FC = () => {
 
                     {/* The Riemann Sphere */}
                     <mesh>
-                        <sphereGeometry attach="geometry" args={[1, riemannSphere.geometry.subdivisions, riemannSphere.geometry.subdivisions]} />
+                        <sphereGeometry attach="geometry" args={[1, riemannSphereSettings.geometry.subdivisions, riemannSphereSettings.geometry.subdivisions]} />
                         <shaderMaterial
                             attach="material"
                             needsUpdate={true}
-                            vertexShader={ sphereVertexShader() }
-                            fragmentShader={ sphereFragmentShader(code) }
+                            vertexShader={RIEMANN_SPHERE_VERTEX_SHADER}
+                            fragmentShader={sphereFragmentShader}
                             side={DoubleSide}
                         />
                     </mesh>
 
                     {/* Auxiliary Domain Coloring */}
-                    <mesh visible={riemannSphere.domainColoring.visible} rotation={[Math.PI/2, 0, 0]} position={[0, BOUNDING_BOX_MIN.y, 0]}>
-                        <planeGeometry attach="geometry" args={[BOUNDING_BOX_SIZE.x, BOUNDING_BOX_SIZE.z, riemannSphere.geometry.subdivisions, riemannSphere.geometry.subdivisions]} />
+                    <mesh visible={riemannSphereSettings.domainColoring.visible} rotation={[Math.PI/2, 0, 0]} position={[0, BOUNDING_BOX_MIN.y, 0]}>
+                        <planeGeometry attach="geometry" args={[BOUNDING_BOX_SIZE.x, BOUNDING_BOX_SIZE.z, riemannSphereSettings.geometry.subdivisions, riemannSphereSettings.geometry.subdivisions]} />
                         <shaderMaterial
                             ref={domcolShaderRef}
                             attach="material"
                             needsUpdate={true}
                             uniformsNeedUpdate={true}
-                            vertexShader={ domcolVertexShader() }
-                            fragmentShader={ domcolFragmentShader(code, riemannSphere.domainColoring.opacity) }
+                            vertexShader={DOMCOL_VERTEX_SHADER}
+                            fragmentShader={domcolFragmentShader}
                             uniforms={{
                                 planeXRange:  { value: new Vector2(BOUNDING_BOX_MIN.x, BOUNDING_BOX_MAX.x) },
                                 planeYRange:  { value: new Vector2(BOUNDING_BOX_MIN.z, BOUNDING_BOX_MAX.z) },
@@ -237,7 +252,7 @@ const RiemannSphereGL: React.FC = () => {
                         />
                     </mesh>
 
-                    <gridHelper visible={!riemannSphere.domainColoring.visible} args={[BOUNDING_BOX_SIZE.x, 6, HELPER_COLOR_LIGHT, HELPER_COLOR_DARK]} position={[0, BOUNDING_BOX_MIN.y, 0]} />
+                    <gridHelper visible={!riemannSphereSettings.domainColoring.visible} args={[BOUNDING_BOX_SIZE.x, 6, HELPER_COLOR_LIGHT, HELPER_COLOR_DARK]} position={[0, BOUNDING_BOX_MIN.y, 0]} />
 
                 </Canvas>
             </div>

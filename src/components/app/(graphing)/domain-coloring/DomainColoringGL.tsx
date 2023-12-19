@@ -12,6 +12,8 @@ import {
 } from "@/components/app/(graphing)/utils";
 import {GLSL_FOR_DOMAIN_COLORING} from "@/components/app/(graphing)/shaders";
 import MouseInfoPanel from "@/components/app/(graphing)/domain-coloring/MouseInfoPanel";
+import {useSelector} from "react-redux";
+import {RootState} from "@/redux/store";
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -24,8 +26,14 @@ const VERTEX_SHADER = `
     }
 `;
 
-function createFragmentShader(code: string): string {
+function useDomcolFragmentShader(code: string): string {
+    const graphSettings = useSelector((state: RootState) => state.graphSettings);
+    
     return `
+        bool showDarkGridLines = ${ graphSettings.showDarkGridLines };
+        bool showLightGridLines = ${ graphSettings.showLightGridLines };
+        bool isMinimalThemeEnabled = ${ graphSettings.isMinimalThemeEnabled };
+    
         ${GLSL_FOR_DOMAIN_COLORING}
         
         uniform float screenWidth;
@@ -56,6 +64,7 @@ function createFragmentShader(code: string): string {
  */
 const DomainColoringGL: React.FC = () => {
     const code = useCombinedEditorInputIntoGLSL();
+    const fragmentShader = useDomcolFragmentShader(code);
     const [requiresReload, setRequiresReload] = useState<boolean>(false);
 
     // force reload when code changes are detected
@@ -64,7 +73,7 @@ const DomainColoringGL: React.FC = () => {
         setTimeout(() => {
             setRequiresReload(false);
         }, 200);
-    }, [code]);
+    }, [code, fragmentShader]);
 
     ////////////////////////////////////////////////////////////////////////////////////////
     
@@ -210,7 +219,7 @@ const DomainColoringGL: React.FC = () => {
                             uniformsNeedUpdate={true}
                             uniforms={uniforms}
                             vertexShader={VERTEX_SHADER}
-                            fragmentShader={ createFragmentShader(code) }
+                            fragmentShader={fragmentShader}
                             side={THREE.DoubleSide}
                         />
                     </mesh>

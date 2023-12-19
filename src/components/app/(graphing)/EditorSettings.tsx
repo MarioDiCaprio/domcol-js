@@ -8,7 +8,7 @@ import {
     ModalFooter,
     useDisclosure,
     Tabs,
-    Tab, Card, CardBody, Checkbox, CheckboxGroup
+    Tab, Card, CardBody, Checkbox, Spacer
 } from "@nextui-org/react";
 import {IoMdSettings as SettingsIcon} from "react-icons/io";
 import {useDispatch, useSelector} from "react-redux";
@@ -32,17 +32,17 @@ const GeneralSettings: React.FC<{ onChange: (s: GraphSettings) => void }> = ({ o
     
     return (
         <>
-            <CheckboxGroup>
+            <div className="flex flex-col gap-2">
                 <Checkbox value="dark-grid-lines" isSelected={showDarkGridLines} onValueChange={setShowDarkGridLines}>
-                    Show dark grid lines
+                    Dark grid lines
                 </Checkbox>
-                <Checkbox value="light-grid-lines" isSelected={showLightGridLines} onValueChange={setShowLightGridLines}>
-                    Show light grid lines
+                <Checkbox value="light-grid-lines" isSelected={showLightGridLines} isDisabled={isMinimalThemeEnabled} onValueChange={setShowLightGridLines}>
+                    Light grid lines
                 </Checkbox>
                 <Checkbox value="minimal-theme" isSelected={isMinimalThemeEnabled} onValueChange={setIsMinimalThemeEnabled}>
-                    Use minimal theme
+                    Minimal theme
                 </Checkbox>
-            </CheckboxGroup>
+            </div>
         </>
     )
 }
