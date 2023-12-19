@@ -1,20 +1,23 @@
 import './globals.css'
 import React, {ReactNode} from "react";
+import Providers from "@/components/app/Providers";
 import Navbar from "@/components/app/Navbar";
-import ReduxProvider from "@/components/app/ReduxProvider";
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
     return (
         <html lang="en">
             <body>
-                <ReduxProvider>
+                <Providers>
+                        
                     <Navbar />
+                        
                     <div className="pt-12">
                         <main>
                             { children }
                         </main>
                     </div>
-                </ReduxProvider>
+                        
+                </Providers>
             </body>
         </html>
     );

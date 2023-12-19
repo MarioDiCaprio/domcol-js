@@ -5,6 +5,7 @@ import {riemannSphereSlice} from "@/redux/slices/riemannSphereSlice";
 import {authSlice} from "@/redux/slices/authSlice";
 import {complexifyApi} from "@/redux/api/complexifyApi";
 import {setupListeners} from "@reduxjs/toolkit/query";
+import {graphSettingsSlice} from "@/redux/slices/graphSettingsSlice";
 
 
 /**
@@ -15,6 +16,7 @@ export const store = configureStore({
         [complexifyApi.reducerPath]: complexifyApi.reducer,
         authentication: authSlice.reducer,
         equations: equationsSlice.reducer,
+        graphSettings: graphSettingsSlice.reducer,
         domainColoring: domainColoringSlice.reducer,
         riemannSphere: riemannSphereSlice.reducer
     },

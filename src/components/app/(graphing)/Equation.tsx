@@ -1,9 +1,10 @@
 import {addStyles, EditableMathField, MathField} from "react-mathquill";
 import React, {useEffect, useState} from "react";
-import {MdClear as DeleteIcon} from "react-icons/md";
+import { FaTrash as DeleteIcon } from "react-icons/fa";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/redux/store";
 import {setEquations} from "@/redux/slices/equationsSlice";
+import {Button} from "@nextui-org/react";
 
 // add styles for MathQuill
 addStyles();
@@ -59,7 +60,7 @@ const Equation: React.FC<EquationProps> = ({ index, onDelete }) => {
         <div
             id={'equation-' + index}
             key={'equation-' + index}
-            className="relative w-full min-h-[55px] flex border-b border-b-gray-300">
+            className="relative w-full min-h-[55px] flex border-b border-b-gray-300 items-center">
 
             {/* The equation's decorative prefix with additional information */}
             <div className="w-[50px] h-full min-h-[inherit] flex justify-center items-center">
@@ -87,11 +88,9 @@ const Equation: React.FC<EquationProps> = ({ index, onDelete }) => {
             />
 
             {/* Delete Button */}
-            <button
-                className="w-[60px] h-full min-h-[inherit] flex justify-center items-center"
-                onClick={handleDeleteButtonClicked}>
+            <Button isIconOnly color="danger" variant="light" onPress={handleDeleteButtonClicked} className="mr-2 text-lg">
                 <DeleteIcon />
-            </button>
+            </Button>
 
         </div>
     );

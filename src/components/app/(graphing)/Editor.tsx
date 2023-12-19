@@ -7,7 +7,10 @@ import Equation from "@/components/app/(graphing)/Equation";
 import {addEquation, clearEquations, removeEquation} from "@/redux/slices/equationsSlice";
 import { IoMdAdd as AddIcon } from "react-icons/io";
 import { MdKeyboardDoubleArrowRight as OpenMenuIcon, MdKeyboardDoubleArrowLeft as CloseMenuIcon } from "react-icons/md";
+import { IoMdSettings as SettingsIcon } from "react-icons/io";
 import { motion } from "framer-motion";
+import {Button} from "@nextui-org/react";
+import EditorSettings from "@/components/app/(graphing)/EditorSettings";
 
 
 const Editor: React.FC = () => {
@@ -55,29 +58,20 @@ const Editor: React.FC = () => {
             <motion.div
                 animate={{ x: isOpen? 0 : -500 }}
                 transition={{ duration: 0.3 }}
-                className="
-                    z-[2] fixed w-full max-w-[500px] h-full flex flex-col
-                    border border-r-zinc-300 shadow-2xl">
+                className="z-[2] fixed w-full max-w-[500px] h-full flex flex-col border border-r-zinc-300 shadow-2xl">
 
                 <div className="
-                        w-full h-10 flex justify-between items-center
+                        w-full h-12 flex justify-between items-center
                         border border-b-zinc-400 text-zinc-800 text-3xl
-                        bg-gradient-to-b from-zinc-300 via-zinc-200 to-zinc-300">
-                    <button
-                        onClick={handleAddEquation}
-                        className="
-                            w-7 h-7 flex justify-center items-center rounded
-                            hover:bg-zinc-400 hover:text-zinc-950">
+                        bg-gradient-to-b from-zinc-100 to-zinc-200">
+                    <Button isIconOnly variant="light" onClick={handleAddEquation} className="text-2xl">
                         <AddIcon />
-                    </button>
-                    <div>
-                        <button
-                            onClick={toggleEditorOpen}
-                            className="
-                            w-7 h-7 flex justify-center items-center rounded
-                            hover:bg-zinc-400 hover:text-zinc-950">
+                    </Button>
+                    <div className="flex gap-3">
+                        <EditorSettings />
+                        <Button isIconOnly variant="light" onPress={toggleEditorOpen} className="text-2xl">
                             <CloseMenuIcon />
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
