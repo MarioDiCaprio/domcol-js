@@ -8,8 +8,9 @@ import {
     ModalFooter,
     useDisclosure,
     Tabs,
-    Tab, Card, CardBody, Checkbox, Spacer
+    Tab, Card, CardBody, Checkbox, Spacer, Popover, PopoverTrigger, PopoverContent
 } from "@nextui-org/react";
+import { BsFillInfoCircleFill as InfoIcon } from "react-icons/bs";
 import {IoMdSettings as SettingsIcon} from "react-icons/io";
 import {useDispatch, useSelector} from "react-redux";
 import {GraphSettings, updateGraphSettings} from "@/redux/slices/graphSettingsSlice";
@@ -35,9 +36,33 @@ const GeneralSettings: React.FC<{ onChange: (s: GraphSettings) => void }> = ({ o
             <div className="flex flex-col gap-2">
                 <Checkbox value="dark-grid-lines" isSelected={showDarkGridLines} onValueChange={setShowDarkGridLines}>
                     Dark grid lines
+                    <Popover showArrow>
+                        <PopoverTrigger>
+                            <Button isIconOnly variant="light" size="sm" className="ml-2 text-md text-zinc-600">
+                                <InfoIcon />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                            <div className=" max-w-[200px] px-1 py-2">
+                                Dark grid lines are drawn whenever the real or imaginary part of the graph are integral.
+                            </div>
+                        </PopoverContent>
+                    </Popover>
                 </Checkbox>
                 <Checkbox value="light-grid-lines" isSelected={showLightGridLines} isDisabled={isMinimalThemeEnabled} onValueChange={setShowLightGridLines}>
                     Light grid lines
+                    <Popover showArrow>
+                        <PopoverTrigger>
+                            <Button isIconOnly variant="light" size="sm" className="ml-2 text-md text-zinc-600">
+                                <InfoIcon />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                            <div className=" max-w-[200px] px-1 py-2">
+                                Light grid lines are drawn whenever the graph doubles in magnitude.
+                            </div>
+                        </PopoverContent>
+                    </Popover>
                 </Checkbox>
                 <Checkbox value="minimal-theme" isSelected={isMinimalThemeEnabled} onValueChange={setIsMinimalThemeEnabled}>
                     Minimal theme
