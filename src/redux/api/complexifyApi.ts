@@ -5,9 +5,12 @@ import {RootState} from "@/redux/store";
 import {AuthenticatedUserDTO, AuthTokenDTO, UserDTO} from "@/redux/api/models/DTO";
 
 
+const SERVER_URL = process.env.NODE_ENV !== "production"? "http://localhost:8080" : "";
+
+
 export const complexifyApi = createApi({
     baseQuery: fetchBaseQuery({
-        baseUrl: "/",
+        baseUrl: SERVER_URL,
         prepareHeaders: (headers, api) => {
             // authorization token
             const jwtToken = (api.getState() as RootState).authentication?.token;
