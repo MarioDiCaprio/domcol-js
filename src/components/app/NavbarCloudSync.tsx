@@ -32,7 +32,7 @@ const RenderWhenAuthenticated: React.FC = () => {
 }
 
 const NavbarCloudSync: React.FC = () => {
-    const authToken = useSelector((state: RootState) => state.authentication);
+    const authToken = useSelector((state: RootState) => state.authorization);
     
     if (!authToken) {
         return (

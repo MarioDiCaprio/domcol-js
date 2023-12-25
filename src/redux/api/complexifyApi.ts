@@ -2,7 +2,8 @@ import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {setAuthToken} from "@/redux/slices/authSlice";
 import {HYDRATE} from "next-redux-wrapper";
 import {RootState} from "@/redux/store";
-import {AuthenticatedUserDTO, AuthTokenDTO, UserDTO} from "@/redux/api/models/DTO";
+import {AuthenticatedUserDTO, SingleValueDTO, UserDTO} from "@/redux/api/models/DTO";
+import {LoginRequest, SignupRequest} from "@/redux/api/models/requests";
 
 
 const SERVER_URL = process.env.NODE_ENV !== "production"? "http://localhost:8080" : "";
@@ -13,7 +14,7 @@ export const complexifyApi = createApi({
         baseUrl: SERVER_URL,
         prepareHeaders: (headers, api) => {
             // authorization token
-            const jwtToken = (api.getState() as RootState).authentication?.token;
+            const jwtToken = (api.getState() as RootState).authorization;
             if (jwtToken) {
                 headers.set('Authorization', `Bearer ${jwtToken}`);
             }
@@ -28,18 +29,16 @@ export const complexifyApi = createApi({
     },
     endpoints: builder => ({
         
-        login: builder.mutation<AuthTokenDTO, { username: string, password: string }>({
+        login: builder.mutation<SingleValueDTO<string>, LoginRequest>({
             query: args => ({
                 url: '/login',
-                headers: {
-                    "Authorization": "Basic " + Buffer.from(args.username + ':' + args.password).toString('base64')
-                },
+                body: args,
                 method: 'POST'
             }),
-            async onQueryStarted(request, { dispatch, queryFulfilled }) {
+            async onQueryStarted(_request, { dispatch, queryFulfilled }) {
                 queryFulfilled
                     .then(({ data: token }) => {
-                        dispatch(setAuthToken(token));
+                        dispatch(setAuthToken(token.value));
                     })
                     .catch(() => {
                         dispatch(setAuthToken(null));
@@ -47,7 +46,7 @@ export const complexifyApi = createApi({
             }
         }),
 
-        signup: builder.mutation<void, { username: string, email: string, password: string }>({
+        signup: builder.mutation<void, SignupRequest>({
             query: args => ({
                 url: '/signup',
                 body: args,

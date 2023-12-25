@@ -14,7 +14,7 @@ import {graphSettingsSlice} from "@/redux/slices/graphSettingsSlice";
 export const store = configureStore({
     reducer: {
         [complexifyApi.reducerPath]: complexifyApi.reducer,
-        authentication: authSlice.reducer,
+        authorization: authSlice.reducer,
         equations: equationsSlice.reducer,
         graphSettings: graphSettingsSlice.reducer,
         domainColoring: domainColoringSlice.reducer,

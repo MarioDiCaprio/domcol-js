@@ -14,7 +14,6 @@ export interface GraphDTO {
     author: string;
 }
 
-export interface AuthTokenDTO {
-    token: string;
-    username: string;
+export interface SingleValueDTO<T> {
+    value: T;
 }
