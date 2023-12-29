@@ -1,6 +1,5 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import Cookies from "universal-cookie";
-import {JwtTokenDTO} from "@/redux/api/models/DTO";
 
 
 const cookies = new Cookies()
@@ -11,8 +10,9 @@ export const authSlice = createSlice({
     initialState,
     reducers: {
         
-        setAuthToken(state, action: PayloadAction<string | null>) {
-            return action.payload
+        setAuthToken(_state, action: PayloadAction<string | null>) {
+            cookies.set("auth-token", action.payload, { sameSite: "strict" });
+            return action.payload;
         }
         
     }
