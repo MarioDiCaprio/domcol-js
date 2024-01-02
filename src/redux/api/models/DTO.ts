@@ -1,7 +1,7 @@
 export interface UserDTO {
     userId: string;
     username: string;
-    graph: string[];
+    graphs: string[];
     profilePicture: Uint8Array;
 }
 
@@ -12,6 +12,7 @@ export interface AuthenticatedUserDTO extends UserDTO {
 export interface GraphDTO {
     graphId: string;
     title?: string;
+    equations: string[];
     author: string;
 }
 

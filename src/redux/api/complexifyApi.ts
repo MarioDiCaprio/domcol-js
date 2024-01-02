@@ -2,7 +2,7 @@ import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {setAuthToken} from "@/redux/slices/authSlice";
 import {HYDRATE} from "next-redux-wrapper";
 import {RootState} from "@/redux/store";
-import {AuthenticatedUserDTO, SingleValueDTO, UserDTO} from "@/redux/api/models/DTO";
+import {AuthenticatedUserDTO, GraphDTO, SingleValueDTO, UserDTO} from "@/redux/api/models/DTO";
 import {LoginRequest, SignupRequest} from "@/redux/api/models/requests";
 
 
@@ -68,6 +68,13 @@ export const complexifyApi = createApi({
             })
         }),
         
+        graphById: builder.query<GraphDTO, string>({
+            query: (graphId) => ({
+                url: `/graph/${graphId}`,
+                method: 'GET'
+            })
+        }),
+        
     })
 })
 
@@ -77,4 +84,5 @@ export const {
     useSignupMutation,
     useUserBearerQuery,
     useUserBearerSensitiveMutation,
+    useGraphByIdQuery,
 } = complexifyApi
