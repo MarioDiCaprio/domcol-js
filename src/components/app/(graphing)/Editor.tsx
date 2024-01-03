@@ -7,7 +7,6 @@ import Equation from "@/components/app/(graphing)/Equation";
 import {addEquation, clearEquations, removeEquation} from "@/redux/slices/equationsSlice";
 import { IoMdAdd as AddIcon } from "react-icons/io";
 import { MdKeyboardDoubleArrowRight as OpenMenuIcon, MdKeyboardDoubleArrowLeft as CloseMenuIcon } from "react-icons/md";
-import { IoMdSettings as SettingsIcon } from "react-icons/io";
 import { motion } from "framer-motion";
 import {Button} from "@nextui-org/react";
 import EditorSettings from "@/components/app/(graphing)/EditorSettings";
@@ -23,13 +22,18 @@ const Editor: React.FC = () => {
 
     // update equation components whenever the equations in the redux store change
     useEffect(() => {
-        setEquationComponents(equations.map((eq, index) => (
-            <Equation
-                index={index}
-                key={index.toString()}
-                onDelete={handleRemoveEquation}
-            />
-        )));
+        // equations in store
+        const newEquations = equations.map((eq, index) => (
+            <Equation index={index} key={index.toString()} onDelete={handleRemoveEquation}/>
+        ));
+        // "prompt" field that adds new equation when clicked
+        newEquations.push(
+            <div className="relative">
+                <div className="z-[9999] absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-white cursor-pointer" onClick={handleAddEquation}/>
+                <Equation index={equations.length} key="prompt-equation"/>
+            </div>
+        );
+        setEquationComponents(newEquations);
     }, [equations]);
 
     useEffect(() => {
@@ -48,10 +52,6 @@ const Editor: React.FC = () => {
 
     function handleRemoveEquation(index: number) {
         dispatch(removeEquation(index));
-    }
-
-    function handleClearEquations() {
-        dispatch(clearEquations());
     }
     
     return (
