@@ -14,6 +14,7 @@ import {GLSL_FOR_DOMAIN_COLORING} from "@/components/app/(graphing)/shaders";
 import MouseInfoPanel from "@/components/app/(graphing)/domain-coloring/MouseInfoPanel";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux/store";
+import CanvasSnapshot from "@/components/app/(graphing)/CanvasSnapshot";
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -205,7 +206,7 @@ const DomainColoringGL: React.FC = () => {
     return (
         <>
             <div style={{ width: '100%', height: '100%', touchAction: 'none' }} ref={containerRef}>
-                <Canvas style={{ width: '100%', height: '100%', touchAction: 'none' }}>
+                <Canvas gl={{ preserveDrawingBuffer: true }} style={{ width: '100%', height: '100%', touchAction: 'none' }}>
                     <mesh
                         position={[0, 0, 0]}
                         rotation={[0, 0, 0]}
@@ -223,6 +224,7 @@ const DomainColoringGL: React.FC = () => {
                             side={THREE.DoubleSide}
                         />
                     </mesh>
+                    <CanvasSnapshot />
                 </Canvas>
             </div>
             <MouseInfoPanel screen={{ width, height }} domain={infoPanelDomain} />

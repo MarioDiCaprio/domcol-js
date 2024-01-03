@@ -9,6 +9,7 @@ import {transformInterval, useCombinedEditorInputIntoGLSL} from "@/components/ap
 import TextLookingAtCamera from "@/components/app/(graphing)/riemann-sphere/TextLookingAtCamera";
 import {Canvas} from "@react-three/fiber";
 import {OrbitControls} from "@react-three/drei";
+import CanvasSnapshot from "@/components/app/(graphing)/CanvasSnapshot";
 
 
 const RIEMANN_SPHERE_VERTEX_SHADER = `
@@ -186,6 +187,7 @@ const RiemannSphereGL: React.FC = () => {
         <>
             <div className="w-full h-full bg-zinc-100 touch-none">
                 <Canvas
+                    gl={{ preserveDrawingBuffer: true }}
                     style={{ width: '100%', height: '100%', touchAction: 'none' }}
                     camera={{ fov: 75, position: [3, 2, 1]}}
                 >
@@ -254,6 +256,7 @@ const RiemannSphereGL: React.FC = () => {
 
                     <gridHelper visible={!riemannSphereSettings.domainColoring.visible} args={[BOUNDING_BOX_SIZE.x, 6, HELPER_COLOR_LIGHT, HELPER_COLOR_DARK]} position={[0, BOUNDING_BOX_MIN.y, 0]} />
 
+                    <CanvasSnapshot />
                 </Canvas>
             </div>
         </>

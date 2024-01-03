@@ -6,6 +6,7 @@ import {authSlice} from "@/redux/slices/authSlice";
 import {complexifyApi} from "@/redux/api/complexifyApi";
 import {setupListeners} from "@reduxjs/toolkit/query";
 import {graphSettingsSlice} from "@/redux/slices/graphSettingsSlice";
+import {canvasSnapshotSlice} from "@/redux/slices/canvasSnapshotSlice";
 
 
 /**
@@ -15,6 +16,7 @@ export const store = configureStore({
     reducer: {
         [complexifyApi.reducerPath]: complexifyApi.reducer,
         authorization: authSlice.reducer,
+        canvasSnapshot: canvasSnapshotSlice.reducer,
         equations: equationsSlice.reducer,
         graphSettings: graphSettingsSlice.reducer,
         domainColoring: domainColoringSlice.reducer,

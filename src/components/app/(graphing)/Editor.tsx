@@ -11,6 +11,7 @@ import { IoMdSettings as SettingsIcon } from "react-icons/io";
 import { motion } from "framer-motion";
 import {Button} from "@nextui-org/react";
 import EditorSettings from "@/components/app/(graphing)/EditorSettings";
+import EditorSnapshotLink from "@/components/app/(graphing)/EditorSnapshotLink";
 
 
 const Editor: React.FC = () => {
@@ -68,6 +69,7 @@ const Editor: React.FC = () => {
                         <AddIcon />
                     </Button>
                     <div className="flex gap-3">
+                        <EditorSnapshotLink />
                         <EditorSettings />
                         <Button isIconOnly variant="light" onPress={toggleEditorOpen} className="text-2xl">
                             <CloseMenuIcon />
