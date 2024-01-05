@@ -2,12 +2,15 @@ grammar Complex;
 
 @header {
 
-type SymbolDeclaration = {
+type SymbolDeclaration = Partial<{
     name: string; // The name of the symbol being declared (one character!)
     type: 'function' | 'constant'; // The type of the declaration
     value: string; // The value of the symbol being declared i.e. the value that is returned when invoking the symbol
     initialOrder: number; // The initial order of the declaration. The n-th declaration should have order n.
-}
+    isPlot: boolean; // Whether the symbol should be plotted
+    arguments: string[]; // if the symbol is a function, a list of arguments. E.g: f(x, y) has arguments ['x', 'y'].
+    dependencies: string[]; // a list of all symbols (their names) on which this symbol is dependent. E.g: f(x) = g(x) + a is dependent on ['g', 'a']
+}>;
 
 }
 
@@ -43,20 +46,44 @@ currentSymbol: (undefined | SymbolDeclaration) = undefined;
 
 symbols: {[name: string]: SymbolDeclaration} = {};
 
-private compareSymbolsOrder(a: typeof this.currentSymbol, b: typeof this.currentSymbol) {
+plotSymbol: string | undefined = undefined;
 
+private compareSymbols(a: SymbolDeclaration, b: SymbolDeclaration): number {
+    const aDependsOnB = a?.dependencies?.includes(b?.name as string);
+    const bDependsOnA = b?.dependencies?.includes(a?.name as string);
+    
+    if (aDependsOnB && bDependsOnA)
+        return 0;
+    else if (aDependsOnB)
+        return 1;
+    else if (bDependsOnA)
+        return -1;
+    if (a.type === 'constant' && b.type === 'function')
+        return -1;
+    else if (b.type === 'constant' && a.type === 'function')
+        return 1;
+    else if (a.isPlot && !b.isPlot)
+        return 1;
+    else if (b.isPlot && !a.isPlot)
+        return -1;
+    else
+        return 0;
 }
 
-// The parsed lines to prepend to the start of the document
-tmpStart: string[] = [];
+private symbolToGLSL(symbol: SymbolDeclaration): string {
+    const args = symbol.arguments?.map(x => 'vec2 ' + x + '_VAR').join(', ');
+    return symbol.type === 'constant' || !symbol.arguments?
+`vec2 ${symbol.name}_CONST() {
+    return ${symbol.value};
+}`
+    :
+`
+vec2 ${symbol.name}_FUNC(${args}) {
+    return ${symbol.value};
+}
+`;
+}
 
-// The lines of the parsed code in GLSL. They are merged later.
-tmp: string[] = [];
-
-// The parsed lines to append at the end of the document
-tmpEnd: string[] = [];
-
-variables: {[name: string]: string | undefined} = {};
 
 // The merged tmp array, i.e. the full GLSL code
 result: string = '';
@@ -71,65 +98,56 @@ parse:
         assignment
     )*
     {
-        for (let key in this.variables) {
-            this.tmpStart.push(`
-                vec2 ${key}_DECLARED_VAR() {
-                    return ${this.variables[key]};
-                }`);
+        const sorted = Object.values(this.symbols).sort(this.compareSymbols);
+        this.result = sorted.map(this.symbolToGLSL).join('\n\n');
+        if (this.plotSymbol) {
+            const symbol = this.symbols[this.plotSymbol];
+            this.result +=
+`
+
+vec2 plottedFunction(vec2 z) {
+    return ${symbol?.type === "constant"? symbol?.name + '_CONST()' : symbol?.name + '_FUNC(z)'};
+}
+
+`;
         }
-        this.result = [
-                this.tmpStart.join('\n'),
-                this.tmp.join('\n'),
-                this.tmpEnd.join('\n')
-        ].join('\n');
     }
 ;
 
 
 assignment:
+    { this.currentSymbol = { initialOrder: Object.keys(this.symbols).length}; }
     // If this symbol is given, then the function will be plotted!
     isPlot = PLOTTED_FUNC?
+    { this.currentSymbol.isPlot = $isPlot.text? true : false; }
     // Assign a character
     c = element
-    // First, assume the assignment is constant (i.e. not a function)
     {
-        let isFunction = false;
-        let variable = null;
         let name = $c.value as string;
-        let argument = null;
+        this.currentSymbol.name = name;
+        this.currentSymbol.type = 'constant';
+        this.plotSymbol = this.currentSymbol.isPlot? name : this.plotSymbol;
     }
+    // First, assume the assignment is constant (i.e. not a function)
     // If paranthesis are given, then the assignment is actually a function
     (
         LEFT
         c1=element
         RIGHT
         {
-            isFunction = true;
-            argument = $c1.value;
+            this.currentSymbol.type = 'function';
+            this.currentSymbol.dependencies = [];
+            this.currentSymbol.arguments = [];
+            this.currentSymbol.arguments.push($c1.text as string);
         }
     )?
     // otherwise, it is indeed a constant
     EQUALS
     a = addition
     {
-        let value = $a.value;
-        // if the assignment should be plotted, then add it to the end of the file
-        if ($isPlot.text) {
-            this.tmpEnd.push(`
-                vec2 plottedFunction(vec2 ${argument}_VAR) {
-                    return ${value};
-                }
-            `);
-        // else, add this assignment as usual
-        } else if (isFunction) {
-            this.tmp.push(`
-                vec2 ${name}C(vec2 ${argument}_VAR) {
-                    return ${value};
-                }
-            `);
-        } else {
-            this.variables[name] = value;
-        }
+        this.currentSymbol.value = $a.value as string;
+        this.symbols[name] = { ...this.currentSymbol };
+        this.currentSymbol = undefined;
     }
 ;
 
@@ -241,7 +259,7 @@ atom returns [value: string | undefined]:
     n=num
     { $value = $n.value; }
     |
-    // function or variable
+    // previously declared function or constant (or, in case of functions, a function argument)
     el=element
     {
         let isFunc = false;
@@ -255,7 +273,8 @@ atom returns [value: string | undefined]:
         {
             isFunc = true;
             let arg = $a.value;
-            $value = `${name}C(${arg})`;
+            $value = `${name}_FUNC(${arg})`;
+            this.currentSymbol?.dependencies?.push(name);
         }
     )?
     // otherwise, it is a variable
@@ -264,8 +283,11 @@ atom returns [value: string | undefined]:
             // if variable was declared earlier, it is actually a function, because GLSL constants require
             // constant expressions, but the user should be free to declare any type of constants!
             // e.g.: sin(5) is not a constant expression, but valid nonetheless
-            if (name in this.variables)
-                $value = `${name}_DECLARED_VAR()`;
+            let isConstant = this.symbols[name]?.type === 'constant';
+            if (isConstant) {
+                $value = `${name}_CONST()`;
+                this.currentSymbol?.dependencies?.push(name);
+            }
             else
                 $value = `${name}_VAR`;
         }

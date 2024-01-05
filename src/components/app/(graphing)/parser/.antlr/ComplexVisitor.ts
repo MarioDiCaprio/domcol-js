@@ -2,12 +2,15 @@
 
 
 
-type SymbolDeclaration = {
+type SymbolDeclaration = Partial<{
     name: string; // The name of the symbol being declared (one character!)
     type: 'function' | 'constant'; // The type of the declaration
     value: string; // The value of the symbol being declared i.e. the value that is returned when invoking the symbol
     initialOrder: number; // The initial order of the declaration. The n-th declaration should have order n.
-}
+    isPlot: boolean; // Whether the symbol should be plotted
+    arguments: string[]; // if the symbol is a function, a list of arguments. E.g: f(x, y) has arguments ['x', 'y'].
+    dependencies: string[]; // a list of all symbols (their names) on which this symbol is dependent. E.g: f(x) = g(x) + a is dependent on ['g', 'a']
+}>;
 
 
 
