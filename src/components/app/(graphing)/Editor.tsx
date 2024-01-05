@@ -28,9 +28,9 @@ const Editor: React.FC = () => {
         ));
         // "prompt" field that adds new equation when clicked
         newEquations.push(
-            <div className="relative">
+            <div className="relative" key="prompt-equation">
                 <div className="z-[9999] absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-white cursor-pointer" onClick={handleAddEquation}/>
-                <Equation index={equations.length} key="prompt-equation"/>
+                <Equation index={equations.length} />
             </div>
         );
         setEquationComponents(newEquations);
