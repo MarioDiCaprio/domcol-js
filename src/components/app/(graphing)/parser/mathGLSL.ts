@@ -1,6 +1,6 @@
-import antlr4 from 'antlr4';
-import ComplexLexer from './.antlr/ComplexLexer';
-import ComplexParser from './.antlr/ComplexParser';
+import {ComplexLexer} from './.antlr/ComplexLexer';
+import {ComplexParser} from './.antlr/ComplexParser';
+import {ANTLRInputStream, CommonTokenStream} from "antlr4ts";
 
 
 /**
@@ -18,9 +18,9 @@ namespace MathGLSL {
         if (!input) {
             return '';
         }
-        const chars = new antlr4.InputStream(input);
+        const chars = new ANTLRInputStream(input);
         const lexer = new ComplexLexer(chars);
-        const tokens = new antlr4.CommonTokenStream(lexer);
+        const tokens = new CommonTokenStream(lexer);
         const parser = new ComplexParser(tokens);
         parser.removeErrorListeners();
         parser.parse();

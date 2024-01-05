@@ -1,5 +1,15 @@
 grammar Complex;
 
+@header {
+
+type SymbolDeclaration = {
+    name: string; // The name of the symbol being declared (one character!)
+    type: 'function' | 'constant'; // The type of the declaration
+    value: string; // The value of the symbol being declared i.e. the value that is returned when invoking the symbol
+    initialOrder: number; // The initial order of the declaration. The n-th declaration should have order n.
+}
+
+}
 
 @members {
 /**
@@ -21,37 +31,51 @@ grammar Complex;
 * @param args An array of arguments for the function
 * @returns The equivalent string in GLSL
 */
-function group(start, delimiter, end, args) {
+private group(start: string, delimiter: string, end: string, args: string[]): string {
     if (args.length == 1) {
         return args[0];
     }
-    return start + args[0] + delimiter + group(start, delimiter, end, args.slice(1)) + end;
+    return start + args[0] + delimiter + this.group(start, delimiter, end, args.slice(1)) + end;
 };
 
-// assigns the created functions to this object
-this.group = group;
+// The context of the current declaration
+currentSymbol: (undefined | SymbolDeclaration) = undefined;
+
+symbols: {[name: string]: SymbolDeclaration} = {};
+
+private compareSymbolsOrder(a: typeof this.currentSymbol, b: typeof this.currentSymbol) {
+
+}
 
 // The parsed lines to prepend to the start of the document
-this.tmpStart = [];
+tmpStart: string[] = [];
 
 // The lines of the parsed code in GLSL. They are merged later.
-this.tmp = [];
+tmp: string[] = [];
 
 // The parsed lines to append at the end of the document
-this.tmpEnd = [];
+tmpEnd: string[] = [];
 
-this.variables = {};
+variables: {[name: string]: string | undefined} = {};
 
 // The merged tmp array, i.e. the full GLSL code
-this.result = '';
+result: string = '';
+
 }
 
 
 parse:
     assignment
+    (
+        SEMICOLON
+        assignment
+    )*
     {
         for (let key in this.variables) {
-            this.tmpStart.push(`vec2 ${key}_VAR = ${this.variables[key]};`);
+            this.tmpStart.push(`
+                vec2 ${key}_DECLARED_VAR() {
+                    return ${this.variables[key]};
+                }`);
         }
         this.result = [
                 this.tmpStart.join('\n'),
@@ -71,7 +95,7 @@ assignment:
     {
         let isFunction = false;
         let variable = null;
-        let name = $c.value;
+        let name = $c.value as string;
         let argument = null;
     }
     // If paranthesis are given, then the assignment is actually a function
@@ -110,7 +134,7 @@ assignment:
 ;
 
 
-addition returns [value]:
+addition returns [value: string | undefined]:
     pm1 = (PLUS|MINUS)?
     m1 = multiplication
     {
@@ -131,20 +155,21 @@ addition returns [value]:
 ;
 
 
-multiplication returns [value]:
+multiplication returns [value: string | undefined]:
     p1 = fractionOrPower
-    { let powers = [$p1.value]; }
+    { let powers: string[] = []; }
+    { powers.push($p1.value as string); }
     (
         TIMES?
         p2 = fractionOrPower
-        { powers.push($p2.value); }
+        { powers.push($p2.value as string); }
     )*
     { $value = this.group('multiplyC(', ', ', ')', powers); }
 ;
 
 // One extra rule for this one, as the LaTeX syntax infers the same
 // priority on powers and fractions
-fractionOrPower returns [value]:
+fractionOrPower returns [value: string | undefined]:
     p=power
     { $value = $p.value; }
     |
@@ -159,10 +184,11 @@ fractionOrPower returns [value]:
 ;
 
 // power
-power returns [value]:
+power returns [value: string | undefined]:
     // power with exponent
     f1 = atom
-    { let args = [$f1.value]; }
+    { let args: string[] = []; }
+    { args.push($f1.value as string); }
     (
         POW
         (
@@ -171,7 +197,7 @@ power returns [value]:
             LEFT_BRACE f2 = atom RIGHT_BRACE
         )
         {
-            let f = $f2.value;
+            let f = $f2.value as string;
             args.push(f);
         }
     )*
@@ -184,7 +210,7 @@ power returns [value]:
 
 
 // a function, variable, number or nested expression
-atom returns [value]:
+atom returns [value: string | undefined]:
     // predefined constants (without backslash)
     c=('i' | 'e')
     { $value = $c.text + '_VAR'; }
@@ -219,7 +245,7 @@ atom returns [value]:
     el=element
     {
         let isFunc = false;
-        let name = $el.value;
+        let name = $el.value as string;
     }
     // a character followed by paranthesis evaluates to a function
     (
@@ -234,8 +260,15 @@ atom returns [value]:
     )?
     // otherwise, it is a variable
     {
-        if (!isFunc)
-            $value = `${name}_VAR`;
+        if (!isFunc) {
+            // if variable was declared earlier, it is actually a function, because GLSL constants require
+            // constant expressions, but the user should be free to declare any type of constants!
+            // e.g.: sin(5) is not a constant expression, but valid nonetheless
+            if (name in this.variables)
+                $value = `${name}_DECLARED_VAR()`;
+            else
+                $value = `${name}_VAR`;
+        }
     }
     |
     // nested expression
@@ -249,10 +282,10 @@ atom returns [value]:
 ;
 
 // a number, either with or without floating point
-num returns [value]:
+num returns [value: string | undefined]:
     n=NUMBER
     {
-        let num = $n.text;
+        let num = $n.text as string;
         if (!num.includes('.'))
             num += '.0';
         $value = `vec2(${num}, 0.0)`;
@@ -261,7 +294,7 @@ num returns [value]:
 
 // Some non-numeric element, i.e. a function or variable
 // This will be determined later under 'atom'
-element returns [value]:
+element returns [value: string | undefined]:
     c=CHAR
     { $value = $c.text; }
 ;

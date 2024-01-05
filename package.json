@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate-parser": "antlr4ts -visitor \"src/components/app/(graphing)/parser/.antlr/Complex.g4\" -o \"src/components/app/(graphing)/parser/.antlr\""
   },
   "dependencies": {
     "@nextui-org/react": "^2.2.9",
@@ -14,7 +15,7 @@
     "@react-three/fiber": "^8.15.11",
     "@reduxjs/toolkit": "^1.9.7",
     "@use-gesture/react": "^10.3.0",
-    "antlr4": "^4.13.1-patch-1",
+    "antlr4ts": "^0.5.0-alpha.4",
     "framer-motion": "^10.12.16",
     "glslify-loader": "^2.0.0",
     "jquery": "^3.7.1",
@@ -30,12 +31,12 @@
     "universal-cookie": "^6.1.1"
   },
   "devDependencies": {
-    "@types/antlr4": "^4.11.6",
     "@types/jquery": "^3.5.29",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/three": "^0.158.2",
+    "antlr4ts-cli": "^0.5.0-alpha.4",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.0.2",

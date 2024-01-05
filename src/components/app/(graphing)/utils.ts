@@ -76,8 +76,7 @@ export function autoCalculateDomain(screen: {width: number; height: number}, pro
 
 export function useCombinedEditorInputIntoGLSL(): string {
     const equations = useSelector((state: RootState) => state.equations);
-    let combined = equations.join('\n\n');
-    return MathGLSL.parse(combined);
+    return MathGLSL.parse(equations.join(';'));
 }
 
 export function useScreenSize() {
