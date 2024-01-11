@@ -55,7 +55,9 @@ const RenderWhenAuthenticated: React.FC = () => {
                     <ModalBody>
                         <div className="py-5 flex flex-wrap gap-5">
                             {user.graphs.map(graphId => (
-                                <GraphCard graphId={graphId} />
+                                <div key={graphId}>
+                                    <GraphCard graphId={graphId} />
+                                </div>
                             ))}
                         </div>
                     </ModalBody>
