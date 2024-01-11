@@ -63,7 +63,7 @@ const Equation: React.FC<EquationProps> = ({ index, onDelete }) => {
             className="relative w-full min-h-[55px] flex border-b border-b-gray-300 items-center">
 
             {/* The equation's decorative prefix with additional information */}
-            <div className="w-[50px] h-full min-h-[inherit] flex justify-center items-center">
+            <div className="w-[50px] h-full min-h-[inherit] flex justify-center items-center bg-zinc-200 text-zinc-500 border-r border-r-gray-300 select-none cursor-move">
                 {/* The equation's index in the editor, +1 to make it one-based */}
                 <span>{ index + 1 }</span>
             </div>

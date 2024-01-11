@@ -36,11 +36,6 @@ export const equationsSlice = createSlice({
             let newState: EquationRegistry = state.filter((_eq, index) => index !== action.payload);
             cookies.set('equations', newState);
             return newState;
-        },
-
-        clearEquations: (_state) => {
-            cookies.set('equations', []);
-            return [];
         }
 
     }
@@ -64,8 +59,3 @@ export const addEquation = equationsSlice.actions.addEquation;
  * A redux action that removes an equation from the editor at the given index.
  */
 export const removeEquation = equationsSlice.actions.removeEquation;
-
-/**
- * A redux action that clears all equations in the editor.
- */
-export const clearEquations = equationsSlice.actions.clearEquations;

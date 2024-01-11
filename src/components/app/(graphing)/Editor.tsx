@@ -4,7 +4,7 @@ import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/redux/store";
 import Equation from "@/components/app/(graphing)/Equation";
-import {addEquation, clearEquations, removeEquation} from "@/redux/slices/equationsSlice";
+import {addEquation, removeEquation} from "@/redux/slices/equationsSlice";
 import { IoMdAdd as AddIcon } from "react-icons/io";
 import { MdKeyboardDoubleArrowRight as OpenMenuIcon, MdKeyboardDoubleArrowLeft as CloseMenuIcon } from "react-icons/md";
 import { motion } from "framer-motion";
