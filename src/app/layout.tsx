@@ -8,15 +8,15 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
         <html lang="en">
             <body>
                 <Providers>
-                        
-                    <Navbar />
-                        
-                    <div className="pt-12">
-                        <main>
-                            { children }
+                    
+                    <div className="w-screen h-screen flex flex-col">
+                        <Navbar />
+
+                        <main className="w-full h-full pt-12 relative">
+                            {children}
                         </main>
                     </div>
-                        
+
                 </Providers>
             </body>
         </html>
