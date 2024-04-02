@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const Page: React.FC = () => {
     return (
         <>
-            <div className="z-[-1] fixed top-0 left-0 w-screen h-screen cursor-grab">
+            <div className="fixed top-0 left-0 w-screen h-screen cursor-grab">
                 <RiemannSphereGL />
             </div>
         </>
