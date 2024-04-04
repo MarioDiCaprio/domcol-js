@@ -9,11 +9,6 @@ import {useEffect, useState} from "react";
  */
 export type Interval = { min: number, max: number };
 
-/**
- * This is a two-dimensional point.
- */
-export type Point2D = [number, number];
-
 // Note: While `Interval` and `Point2D` are the same, they mean
 // different things semantically!
 
@@ -40,7 +35,7 @@ export function transformInterval(value: number, from: Interval, to: Interval): 
 
 export function scaleInterval(factor: number, interval: Interval): Interval {
     const {min: lower, max: upper} = interval;
-    let center = (lower + upper) / 2;
+    let center = lower + (upper - lower) / 2;
     return {min: (lower - center) * factor + center, max: (upper - center) * factor + center};
 }
 
@@ -77,17 +72,4 @@ export function autoCalculateDomain(screen: {width: number; height: number}, pro
 export function useCombinedEditorInputIntoGLSL(): string {
     const equations = useSelector((state: RootState) => state.equations);
     return MathGLSL.parse(equations.join(';'));
-}
-
-export function useScreenSize() {
-    const [width, setWidth] = useState<number>(-1);
-    const [height, setHeight] = useState<number>(-1);
-
-    useEffect(() => {
-        let main = document.getElementsByTagName('main').item(0) as HTMLElement;
-        setWidth(main.clientWidth);
-        setHeight(main.clientHeight);
-    }, []);
-    
-    return { width, height };
 }
